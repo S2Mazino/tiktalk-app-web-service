@@ -21,6 +21,8 @@ app.use(middleware.jsonErrorInBody)
 
 app.use('/auth', require('./routes/register.js'))
 
+app.use('/auth', require('./routes/signin.js'))
+
 
 /*
  * Return HTML for the / end point. 
