@@ -8,6 +8,7 @@ const pool = require('../utilities').pool
 
 const validation = require('../utilities').validation
 let isStringProvided = validation.isStringProvided
+const sender = process.env.EMAIL
 
 const generateHash = require('../utilities').generateHash
 const generateSalt = require('../utilities').generateSalt
@@ -114,7 +115,7 @@ router.post('/', (request, response, next) => {
                     success: true,
                     email: request.body.email
                 })
-                sendEmail("our.email@lab.com", request.body.email, "Welcome to our App!", "Please verify your Email account.")
+                sendEmail(sender, request.body.email, "Welcome to our App!", "Please verify your Email account.")
             })
             .catch((error) => {
                 //log the error for debugging
