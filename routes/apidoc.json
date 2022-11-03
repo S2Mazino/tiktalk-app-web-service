@@ -1,15 +1,11 @@
 {
-    "name": "TCSS 450 Lab Web Service",
+    "name": "Tiktalk Chat Application Documentation",
     "version": "0.1.0",
-    "description": "The TCSS 450 Lab Web Service API Documentation",
-    "title": "Lab API Doc",
-    "url" : "https://cfb3-lab4-backend-2020sp.herokuapp.com",
+    "description": "Tiktalk Chat Application Web Service API Documentation",
+    "title": "Tiktalk API Doc",
+    "url" : "https://tiktalk-app-web-service.herokuapp.com",
     "order": [
-      "Hello",
-      "Params",
-      "Wait",
-      "DemoSql",
-      "Auth",
-      "Phish"
+      "Signin",
+      "Register"
     ]
   }
