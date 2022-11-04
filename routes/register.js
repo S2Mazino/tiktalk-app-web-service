@@ -117,7 +117,7 @@ router.post('/', (request, response, next) => {
                 })
                 
                 const url = `https://tiktalk-app-web-service.herokuapp.com/auth/verify?id=${values[0]}`
-                console.log(url)
+                //console.log(url)
                 message = `Please click this link to confirm your email: <a href=${url}>${url}</a>`
                 sendEmail(sender, request.body.email,"Welcome to our app", message)
             })
@@ -143,8 +143,8 @@ router.post('/', (request, response, next) => {
 
 router.get('/verify', (request, response) => {
     if(isStringProvided(request.query.id)){
-        //check if the member id exist
-        let theQuery = "SELECT count(*) FROM Members WHERE memberid = $1"
+        //check if the member already verified or not
+        let theQuery = "SELECT verification FROM Members WHERE memberid = $1"
         const values = [request.query.id]
         pool.query(theQuery, values)
         .then(result => { 
@@ -155,16 +155,25 @@ router.get('/verify', (request, response) => {
                 return
             }
 
-            
+            //console.log(result)
+            //console.log(result.rows[0].verification == 1)
+            if(result.rows[0].verification == 1) {
+                response.status(400).send({
+                    message: 'User already verified'
+                })
+                return
+            }
+
             //update the user verification status to 1
             theQuery = "UPDATE Members SET Verification = 1 WHERE MemberID = $1"
 
             pool.query(theQuery, values)
             .then(result => { 
+                //console.log(result)
                 //package and send the results
-                response.json({
+                response.status(201).send({
                     success: true,
-                    message: 'Email verified!'
+                    message: 'Email verification success!'
                 })
 
             })
@@ -178,8 +187,6 @@ router.get('/verify', (request, response) => {
                     message: err.detail
                 })
             })
-            
-
 
         })
         .catch((err) => {
