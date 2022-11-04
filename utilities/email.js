@@ -1,10 +1,11 @@
 const nodemailer = require('nodemailer');
 
+//https://stackoverflow.com/questions/72470777/nodemailer-response-535-5-7-8-username-and-password-not-accepted
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    service: 'Gmail',
     auth: {
       user: process.env.EMAIL,
-      pass: process.env.PASSWORD
+      pass: process.env.PASSWORD 
     }
   });
 
@@ -15,15 +16,15 @@ let sendEmail = (sender, receiver, subject, message) => {
     //create a burner gmail account 
     //make sure you add the password to the environmental variables
     //similar to the DATABASE_URL and PHISH_DOT_NET_KEY (later section of the lab)
-    var mailOptions = {
+    const mailOptions = {
         from: sender,
         to: receiver,
         subject: subject,
-        text: message
+        html: message
       };
     transporter.sendMail(mailOptions, (err, info) => {
-        if (error) {
-            console.log(error);
+        if (err) {
+            console.log(err);
         } else {
             console.log('Email sent: ' + info.response);
         }

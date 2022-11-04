@@ -115,7 +115,11 @@ router.post('/', (request, response, next) => {
                     success: true,
                     email: request.body.email
                 })
-                sendEmail(sender, request.body.email, "Welcome to our App!", "Please verify your Email account.")
+                
+                const url = `https://tiktalk-app-web-service.herokuapp.com/auth/verify?id=${values[0]}`
+                console.log(url)
+                message = `Please click this link to confirm your email: <a href=${url}>${url}</a>`
+                sendEmail(sender, request.body.email,"Welcome to our app", message)
             })
             .catch((error) => {
                 //log the error for debugging
@@ -135,6 +139,71 @@ router.post('/', (request, response, next) => {
                 })
             })
 })
+
+
+router.get('/verify', (request, response) => {
+    if(isStringProvided(request.query.id)){
+        //check if the member id exist
+        let theQuery = "SELECT count(*) FROM Members WHERE memberid = $1"
+        const values = [request.query.id]
+        pool.query(theQuery, values)
+        .then(result => { 
+            if (result.rowCount == 0) {
+                response.status(404).send({
+                    message: 'User not found' 
+                })
+                return
+            }
+
+            
+            //update the user verification status to 1
+            theQuery = "UPDATE Members SET Verification = 1 WHERE MemberID = $1"
+
+            pool.query(theQuery, values)
+            .then(result => { 
+                //package and send the results
+                response.json({
+                    success: true,
+                    message: 'Email verified!'
+                })
+
+            })
+            .catch((err) => {
+                //log the error
+                console.log("Error on UPDATE************************")
+                console.log(err)
+                console.log("************************")
+                console.log(err.stack)
+                response.status(400).send({
+                    message: err.detail
+                })
+            })
+            
+
+
+        })
+        .catch((err) => {
+            //log the error
+            console.log("Error on SELECT************************")
+            console.log(err)
+            console.log("************************")
+            console.log(err.stack)
+            response.status(400).send({
+                message: err.detail
+            })
+        })
+
+    }else{
+        response.status(400)
+        response.send({
+            message: "Missing required information"
+        })
+    }
+
+
+
+})
+
 
 router.get('/hash_demo', (request, response) => {
     let password = 'hello12345'
