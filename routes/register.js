@@ -26,12 +26,13 @@ const router = express.Router()
  * @apiParam {String} last a users last name
  * @apiParam {String} email a users email *unique
  * @apiParam {String} password a users password
- * @apiParam {String} [username] a username *unique, if none provided, email will be used
+ * @apiParam {String} [nickname] a nickname *unique, if none provided, email will be used
  * 
  * @apiParamExample {json} Request-Body-Example:
  *  {
  *      "first":"Charles",
  *      "last":"Bryan",
+ *      "nickname": "cfb3",
  *      "email":"cfb3@fake.email",
  *      "password":"test12345"
  *  }
@@ -41,7 +42,7 @@ const router = express.Router()
  * 
  * @apiError (400: Missing Parameters) {String} message "Missing required information"
  * 
- * @apiError (400: Username exists) {String} message "Username exists"
+ * @apiError (400: Nickname exists) {String} message "Nickname exists"
  * 
  * @apiError (400: Email exists) {String} message "Email exists"
  *  
@@ -206,9 +207,6 @@ router.get('/verify', (request, response) => {
             message: "Missing required information"
         })
     }
-
-
-
 })
 
 
