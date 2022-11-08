@@ -71,7 +71,7 @@ router.get('/', (request, response, next) => {
         })
     }
 }, (request, response) => {
-    const theQuery = `SELECT saltedhash, salt, Credentials.memberid FROM Credentials
+    const theQuery = `SELECT saltedhash, salt, Credentials.memberid, Members.verification FROM Credentials
                       INNER JOIN Members ON
                       Credentials.memberid=Members.memberid 
                       WHERE Members.email=$1`
@@ -81,6 +81,13 @@ router.get('/', (request, response, next) => {
             if (result.rowCount == 0) {
                 response.status(404).send({
                     message: 'User not found' 
+                })
+                return
+            }
+
+            if (result.rows[0].verification == 0) {
+                response.status(404).send({
+                    message: 'User not verified' 
                 })
                 return
             }
