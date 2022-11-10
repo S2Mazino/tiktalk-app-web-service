@@ -1,5 +1,6 @@
 //express is the framework we're going to use to handle requests
 const { response } = require('express')
+const e = require('express')
 const { request } = require('express')
 const express = require('express')
 
@@ -8,6 +9,8 @@ const pool = require('../utilities').pool
 
 const validation = require('../utilities').validation
 let isStringProvided = validation.isStringProvided
+let isValidPassword = validation.isValidPassword
+let isValidEmail = validation.isValidEmail
 const sender = process.env.EMAIL
 
 const generateHash = require('../utilities').generateHash
@@ -66,35 +69,49 @@ router.post('/', (request, response, next) => {
         && isStringProvided(email) 
         && isStringProvided(password)) {
         
-        //We're using placeholders ($1, $2, $3) in the SQL query string to avoid SQL Injection
-        //If you want to read more: https://stackoverflow.com/a/8265319
-        let theQuery = "INSERT INTO MEMBERS(FirstName, LastName, Nickname, Email) VALUES ($1, $2, $3, $4) RETURNING Email, MemberID"
-        let values = [first, last, nickname, email]
-        pool.query(theQuery, values)
-            .then(result => {
-                //stash the memberid into the request object to be used in the next function
-                request.memberid = result.rows[0].memberid
-                next()
+        if(isValidEmail(email)) {
+            if(isValidPassword(password)) {
+
+                //We're using placeholders ($1, $2, $3) in the SQL query string to avoid SQL Injection
+                //If you want to read more: https://stackoverflow.com/a/8265319
+                let theQuery = "INSERT INTO MEMBERS(FirstName, LastName, Nickname, Email) VALUES ($1, $2, $3, $4) RETURNING Email, MemberID"
+                let values = [first, last, nickname, email]
+                pool.query(theQuery, values)
+                    .then(result => {
+                        //stash the memberid into the request object to be used in the next function
+                        request.memberid = result.rows[0].memberid
+                        next()
+                    })
+                    .catch((error) => {
+                        //log the error  for debugging
+                        // console.log("Member insert")
+                        // console.log(error)
+                        if (error.constraint == "members_nickname_key") {
+                            response.status(400).send({
+                                message: "Nickname exists"
+                            })
+                        } else if (error.constraint == "members_email_key") {
+                            response.status(400).send({
+                                message: "Email exists"
+                            })
+                        } else {
+                            response.status(400).send({
+                                message: "other error, see detail",
+                                detail: error.detail
+                            })
+                        }
+                    })
+            } else {
+                response.status(400).send({
+                    message: "Missing password requirement"
+                })
+            }
+        } else {
+            response.status(400).send({
+                message: "Missing email requirement"
             })
-            .catch((error) => {
-                //log the error  for debugging
-                // console.log("Member insert")
-                // console.log(error)
-                if (error.constraint == "members_nickname_key") {
-                    response.status(400).send({
-                        message: "Nickname exists"
-                    })
-                } else if (error.constraint == "members_email_key") {
-                    response.status(400).send({
-                        message: "Email exists"
-                    })
-                } else {
-                    response.status(400).send({
-                        message: "other error, see detail",
-                        detail: error.detail
-                    })
-                }
-            })
+        }
+        
     } else {
         response.status(400).send({
             message: "Missing required information"
