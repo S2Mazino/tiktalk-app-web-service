@@ -1,6 +1,6 @@
 const nodemailer = require('nodemailer');
 
-//https://stackoverflow.com/questions/72470777/nodemailer-response-535-5-7-8-username-and-password-not-accepted
+//https://stackoverflow.com/questions/72470777/nodemailer-response-535-5-7-8-Nickname-and-password-not-accepted
 const transporter = nodemailer.createTransport({
     service: 'Gmail',
     auth: {

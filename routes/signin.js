@@ -22,7 +22,7 @@ const config = {
  * @apiName GetAuth
  * @apiGroup Auth
  * 
- * @apiHeader {String} authorization "username:password" uses Basic Auth 
+ * @apiHeader {String} authorization "Nickname:password" uses Basic Auth 
  * 
  * @apiSuccess {boolean} success true when the name is found and password matches
  * @apiSuccess {String} message "Authentication successful!""

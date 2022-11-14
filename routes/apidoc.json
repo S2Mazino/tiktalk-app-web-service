@@ -6,6 +6,7 @@
     "url" : "https://tiktalk-app-web-service.herokuapp.com",
     "order": [
       "Signin",
-      "Register"
+      "Register",
+      "Messages"
     ]
   }
