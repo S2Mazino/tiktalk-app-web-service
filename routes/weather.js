@@ -102,8 +102,12 @@ const keyParam = `&appid=${weather_api_key}`;
         });
     } else next();
 }, (req, res, next) => {
-    const lat = req.query.lat;
-    const lon = req.query.lon;
+    // const lat = req.query.lat;
+    // const lon = req.query.lon;
+// Hard code for now. 
+    const lat = 47.2529;
+    const lon = -122.4443;
+
     const url = weatherApiURL + coordsParams(lat, lon) + optionalParams + keyParam;
     fetch(url)
         .then((response) => response.json())
