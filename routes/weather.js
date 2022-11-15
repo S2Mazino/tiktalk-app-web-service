@@ -37,7 +37,7 @@ const fetch = require('node-fetch');
 // const lat = 47.2529;
 // const lon = -122.4443;
 
-const weatherApiURL = 'https://api.openweathermap.org/data/2.5/onecall';
+const weatherApiURL = 'https://api.openweathermap.org/data/3.0/onecall';
 const coordsParams = (lat, lon) => { return `?lat=${lat}&lon=${lon}`; };
 const optionalParams = '&exclude=minutely,alerts';
 const keyParam = `&appid=${weather_api_key}`;
@@ -62,11 +62,8 @@ const keyParam = `&appid=${weather_api_key}`;
  *       "currentWeather": {
  *                              temp: 69,
  *                              description: Clear Sky,
- *                              minTemp: 42,
- *                              maxtemp: 72,
  *                              humidity: 20,
  *                              feels_like: 63,
- *                              prob_precipitation: 0.2,
  *                              icon: 01d
  *                         },
  *       "hourlyForecast": {
@@ -102,13 +99,16 @@ const keyParam = `&appid=${weather_api_key}`;
         });
     } else next();
 }, (req, res, next) => {
-    // const lat = req.query.lat;
-    // const lon = req.query.lon;
+    const lat = req.query.lat;
+    const lon = req.query.lon;
 // Hard code for now. 
-    const lat = 47.2529;
-    const lon = -122.4443;
+    // const lat = 47.2529;
+    // const lon = -122.4443;
 
     const url = weatherApiURL + coordsParams(lat, lon) + optionalParams + keyParam;
+
+    console.log(url);
+
     fetch(url)
         .then((response) => response.json())
         .then((data) => {
