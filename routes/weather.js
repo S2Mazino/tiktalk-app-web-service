@@ -18,7 +18,7 @@ let isStringProvided = validation.isStringProvided
 
 let weather_api_key = process.env.WEATHER_API_KEY1
 
-const https = require('https')
+// const https = require('https')
 
 // Use node to fetch the data from OpenWeatherMap API
 const fetch = require('node-fetch');
@@ -134,35 +134,35 @@ const keyParam = `&appid=${apiKey}`;
 );
 
 //Convert location(city or state or zipcode) to lon&lat: https://openweathermap.org/api/geocoding-api
-router.get("/zip", (request, response, next) => {
-    //validate on empty parameters
-    if (!isStringProvided(request.query.zip)) {
-        response.status(400).send({
-            message: "Missing required information"
-        })
-    } else {
-        next()
-    }
-}, (request, response, next) => {
-    //make the api call to get long and lat based on location (city or state or zipcode)
-    let zip = request.query.zip
-    let url = "https://api.openweathermap.org/geo/1.0/zip?zip=" + zip +"&appid=" + weather_api_key
-    let body = ""
+// router.get("/zip", (request, response, next) => {
+//     //validate on empty parameters
+//     if (!isStringProvided(request.query.zip)) {
+//         response.status(400).send({
+//             message: "Missing required information"
+//         })
+//     } else {
+//         next()
+//     }
+// }, (request, response, next) => {
+//     //make the api call to get long and lat based on location (city or state or zipcode)
+//     let zip = request.query.zip
+//     let url = "https://api.openweathermap.org/geo/1.0/zip?zip=" + zip +"&appid=" + weather_api_key
+//     let body = ""
 
-    https.get(url, res => {
-        res.on('data', chunk => {
-            body += chunk
-        });
+//     https.get(url, res => {
+//         res.on('data', chunk => {
+//             body += chunk
+//         });
 
-        res.on('end', () => {
-            body = JSON.parse(body)
-            console.log('lat ', body.lat)
-        });
+//         res.on('end', () => {
+//             body = JSON.parse(body)
+//             console.log('lat ', body.lat)
+//         });
     
-    }).on('error', err => {
-        console.log("Error ", err)
-    });
+//     }).on('error', err => {
+//         console.log("Error ", err)
+//     });
 
-})
+// })
 
 module.exports = router
