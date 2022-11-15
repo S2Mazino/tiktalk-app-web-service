@@ -12,21 +12,15 @@ const getCurrentWeather = (req, res, next) => {
             /(^\w{1})|(\s+\w{1})/g,
             (letter) => letter.toUpperCase()
         );
-        const minTemp = Math.round(req.body.data.daily[0].temp.min);
-        const maxTemp = Math.round(req.body.data.daily[0].temp.max);
         const humidity = Math.round(req.body.data.current.humidity);
         const feels_like = Math.round(req.body.data.current.feels_like);
-        const prob_precipitation = req.body.data.hourly[0].pop;
         const icon = req.body.data.current.weather[0].icon;
 
         req.body.currentWeather = {
             temp: temp,
             description: description,
-            minTemp: minTemp,
-            maxTemp: maxTemp,
             humidity: humidity,
             feels_like: feels_like,
-            prob_precipitation: prob_precipitation,
             icon: icon,
         };
         next();
@@ -37,7 +31,7 @@ const getCurrentWeather = (req, res, next) => {
 const getHourlyForecast = (req, res, next) => {
     let hours = [];
     let hourValue, tempValue, icon;
-    const readableDate = new Date(req.body.currTime);
+    const readableDate = new Date(req.body.dt);
 
     hourValue = readableDate.getHours();
 
@@ -60,7 +54,7 @@ const getHourlyForecast = (req, res, next) => {
 const getDailyForecast = (req, res, next) => {
     let days = [];
     const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const readableDate = new Date(req.body.currTime);
+    const readableDate = new Date(req.body.dt);
     let dayIndex = readableDate.getDay();
 
     for (let i = 0; i < 7; i++) {

@@ -34,8 +34,8 @@ const fetch = require('node-fetch');
 // https://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={lon}&exclude={part}&appid={API key}
 
 // Hard code for now. 
-const lat = 47.2529;
-const lon = -122.4443;
+// const lat = 47.2529;
+// const lon = -122.4443;
 
 const weatherApiURL = 'https://api.openweathermap.org/data/2.5/onecall';
 const coordsParams = (lat, lon) => { return `?lat=${lat}&lon=${lon}`; };
