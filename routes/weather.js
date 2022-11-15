@@ -40,7 +40,7 @@ const fetch = require('node-fetch');
 const weatherApiURL = 'https://api.openweathermap.org/data/2.5/onecall';
 const coordsParams = (lat, lon) => { return `?lat=${lat}&lon=${lon}`; };
 const optionalParams = '&exclude=minutely,alerts&units=imperial';
-const keyParam = `&appid=${apiKey}`;
+const keyParam = `&appid=${weather_api_key}`;
 
 /**
  * @api {get} /weather/?lat={latitude}&lon={longitude} Request formatted weather data with specified coordinates.
