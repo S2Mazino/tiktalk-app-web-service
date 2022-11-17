@@ -29,10 +29,6 @@ app.use('/chats', middleware.checkToken, require('./routes/chats.js'))
 
 app.use('/auth', middleware.checkToken, require('./routes/pushyregister.js'))
 
-app.use("/weather", require("./routes/weather.js"));
-
-
-
 
 /*
  * Return HTML for the / end point. 
