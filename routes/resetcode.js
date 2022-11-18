@@ -16,14 +16,14 @@ const router = express.Router()
 /**
  * @api {post} /resetcode Request to register a user
  * @apiName PostResetCode
- * @apiGroup Auth
+ * @apiGroup ResetCode
  * 
  * @apiParam {String} email a users email *unique
  * 
  * @apiParamExample {json} Request-Body-Example:
  *  {
- *      "email":""email":"cfb3@fake.email",
- *      "code":"code12345""
+ *      "email":"cfb3@fake.email",
+ *      "code":"code12345"
  *  }
  * 
  * @apiSuccess (Success 201) {boolean} success true when the name is inserted
@@ -38,7 +38,7 @@ const router = express.Router()
  * @apiError (400: Other Error) {String} detail Information about th error
  * 
  */ 
-router.post('/', (request, response, next) => {
+router.get('/', (request, response, next) => {
 
     //Retrieve data from query params
     const email = request.body.email
