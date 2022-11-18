@@ -16,13 +16,13 @@ const router = express.Router()
 /**
  * @api {post} /resetcode Request to register a user
  * @apiName PostResetCode
- * @apiGroup Auth
+ * @apiGroup ResetCode
  * 
  * @apiParam {String} email a users email *unique
  * 
  * @apiParamExample {json} Request-Body-Example:
  *  {
- *      "email":"cfb3@fake.email",
+ *      "email":""email":"cfb3@fake.email",
  *      "code":"code12345""
  *  }
  * 
@@ -65,14 +65,8 @@ router.post('/', (request, response, next) => {
             })
         })
 }, (request, response) => {
-        
-        const url = code
-        //console.log(url)
-        message = `Please enter reset code: ${url}`
-        sendEmail(sender, request.body.email, "Reset Code", message)
-        response.status(200).send({
-            message: "success"
-        })
+        message = "Please enter the verification code in your app."
+        sendEmail(sender, request.body.email, code, message)
 });
 
 module.exports = router

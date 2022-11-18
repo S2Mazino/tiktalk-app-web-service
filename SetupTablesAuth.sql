@@ -5,6 +5,7 @@ CREATE TABLE Members (MemberID SERIAL PRIMARY KEY,
                       Nickname VARCHAR(255) NOT NULL UNIQUE,
                       Email VARCHAR(255) NOT NULL UNIQUE,
                       Verification INT DEFAULT 0
+                      ResetCode INT DEFAULT 0
 );
 
 DROP TABLE IF EXISTS Credentials CASCADE;
