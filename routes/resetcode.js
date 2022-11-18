@@ -38,7 +38,7 @@ const router = express.Router()
  * @apiError (400: Other Error) {String} detail Information about th error
  * 
  */ 
-router.get('/', (request, response, next) => {
+router.post('/', (request, response, next) => {
 
     //Retrieve data from query params
     const email = request.body.email
