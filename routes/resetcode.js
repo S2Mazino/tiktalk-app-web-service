@@ -67,12 +67,6 @@ router.get('/', (request, response, next) => {
 }, (request, response) => {
         message = "Please enter the verification code in your app."
         sendEmail(sender, request.body.email, code, message)
-        .catch((error) => {
-            response.status(400).send({
-                message: "other error, see detail",
-                detail: error.detail
-            })
-        })
 });
 
 module.exports = router
