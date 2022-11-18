@@ -22,7 +22,7 @@ const router = express.Router()
  * 
  * @apiParamExample {json} Request-Body-Example:
  *  {
- *      "email":""email":"cfb3@fake.email",
+ *      "email":"cfb3@fake.email",
  *      "code":"code12345""
  *  }
  * 
@@ -65,13 +65,13 @@ router.post('/', (request, response, next) => {
             })
         })
 }, (request, response) => {
-        message = "Please enter the verification code in your app."
-        sendEmail(sender, request.body.email, code, message)
-        .catch((error) => {
-            response.status(400).send({
-                message: "other error, see detail",
-                detail: error.detail
-            })
+        
+        const url = code
+        //console.log(url)
+        message = `Please enter reset code: ${url}`
+        sendEmail(sender, request.body.email, "Reset Code", message)
+        response.status(200).send({
+            message: "success"
         })
 });
 
