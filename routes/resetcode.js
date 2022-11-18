@@ -14,7 +14,7 @@ const sendEmail = require('../utilities').sendEmail
 const router = express.Router()
 
 /**
- * @api {post} /auth/resetcode Request to register a user
+ * @api {post} /resetcode Request to register a user
  * @apiName PostResetCode
  * @apiGroup Auth
  * 

@@ -29,6 +29,8 @@ app.use('/chats', middleware.checkToken, require('./routes/chats.js'))
 
 app.use('/auth', middleware.checkToken, require('./routes/pushyregister.js'))
 
+app.use('/resetcode', middleware.checkToken, require('./routes/resetcode.js'))
+
 
 /*
  * Return HTML for the / end point. 
