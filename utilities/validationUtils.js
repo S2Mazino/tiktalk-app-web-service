@@ -38,7 +38,19 @@ let isValidPassword = (param) =>
   /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])((?=.*\W)|(?=.*_))^[^ ]+$/.test(param) &&
   param.length > 4
 
+
+function randomResetCode() {
+  let result = " ";
+  let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let charactersLength = characters.length;
+  for(let i = 0; i < 6; i++) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+  }
+  return result;
+}
+
+
   
 module.exports = { 
-  isStringProvided, isValidEmail, isValidPassword
+  isStringProvided, isValidEmail, isValidPassword, randomResetCode
 }

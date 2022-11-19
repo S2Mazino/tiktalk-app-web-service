@@ -71,7 +71,7 @@ router.get('/', (request, response, next) => {
         })
     }
 }, (request, response) => {
-    const theQuery = `SELECT saltedhash, salt, Credentials.memberid, Members.verification FROM Credentials
+    const theQuery = `SELECT saltedhash, salt, Credentials.memberid, Members.verification, Members.Firstname, Members.Lastname, Members.Nickname FROM Credentials
                       INNER JOIN Members ON
                       Credentials.memberid=Members.memberid 
                       WHERE Members.email=$1`
@@ -118,7 +118,10 @@ router.get('/', (request, response, next) => {
                 response.json({
                     success: true,
                     message: 'Authentication successful!',
-                    token: token
+                    token: token,
+                    firstname: result.rows[0].firstname,
+                    lastname: result.rows[0].lastname,
+                    nickname: result.rows[0].nickname,
                 })
             } else {
                 //credentials dod not match
