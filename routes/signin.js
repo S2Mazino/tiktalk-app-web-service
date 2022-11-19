@@ -71,7 +71,7 @@ router.get('/', (request, response, next) => {
         })
     }
 }, (request, response) => {
-    const theQuery = `SELECT saltedhash, salt, Credentials.memberid, Members.verification, Members.Firstname, Members.Lastname, Members.Nickname FROM Credentials
+    const theQuery = `SELECT saltedhash, salt, Credentials.memberid, Members.verification, Members.Firstname, Members.Lastname, Members.Nickname, Members.Resetcode FROM Credentials
                       INNER JOIN Members ON
                       Credentials.memberid=Members.memberid 
                       WHERE Members.email=$1`

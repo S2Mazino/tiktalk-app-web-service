@@ -6,7 +6,6 @@ const { randomResetCode } = require('../utilities/validationUtils')
 const pool = require('../utilities').pool
 
 const validation = require('../utilities').validation
-const randomCode = require('../utilities').validation.randomResetCode
 let isStringProvided = validation.isStringProvided
 const sender = process.env.EMAIL
 const sendEmail = require('../utilities').sendEmail
