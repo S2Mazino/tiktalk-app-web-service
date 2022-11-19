@@ -1,14 +1,14 @@
 //express is the framework we're going to use to handle requests
 const express = require('express')
+const { randomResetCode } = require('../utilities/validationUtils')
 
 //Access the connection to Heroku Database
 const pool = require('../utilities').pool
 
 const validation = require('../utilities').validation
+const randomCode = require('../utilities').validation.randomResetCode
 let isStringProvided = validation.isStringProvided
 const sender = process.env.EMAIL
-const code = "TestCode"
-
 const sendEmail = require('../utilities').sendEmail
 
 const router = express.Router()
@@ -65,8 +65,21 @@ router.post('/', (request, response, next) => {
             })
         })
 }, (request, response) => {
-        message = "Please enter the verification code in your app."
-        sendEmail(sender, request.body.email, code, message)
+        const code = randomResetCode();
+        const email = request.body.email;
+        let theQuery = 'UPDATE members SET resetcode =$1 WHERE email =$2'
+        let values = [code, email]
+        pool.query(theQuery, values)
+            .then(result => {
+                console.log(result)
+                message = `Please enter the verification code in your app: ${code}`
+                sendEmail(sender, request.body.email, "Reset Code", message)
+                }).catch((error) => {
+                    response.status(400).send({
+                        message: "other error, see detail",
+                        detail: error.detail
+                    })
+                })
 });
 
 module.exports = router
