@@ -34,7 +34,7 @@ router.get("/:memberId?", (request, response, next) => {
             }
         }).catch(error => {
             response.status(400).send({
-                message: "SQL Error",
+                message: "SQL Error in member validation",
                 error: error
             })
         })
@@ -50,14 +50,16 @@ router.get("/:memberId?", (request, response, next) => {
                         message: "Contacts not found"
                     })
                 } else {
+                    console.log(result.rows)
                     response.send({
+                        memberId: memberId,
                         rowCount: result.rowCount,
                         rows: result.rows
                     })
                 }
             }).catch(err => {
                 response.status(400).send({
-                    message: "SQL Error",
+                    message: "SQL Error in contact retrieve",
                     error: err
                 })
             })
