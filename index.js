@@ -25,6 +25,8 @@ app.use('/auth', require('./routes/signin.js'))
 
 app.use('/resetcode', require('./routes/resetcode.js'))
 
+app.use('/resetpassword', require('./routes/resetpassword.js'))
+
 app.use('/messages', middleware.checkToken, require('./routes/messages.js'))
 
 app.use('/chats', middleware.checkToken, require('./routes/chats.js'))
