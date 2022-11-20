@@ -8,8 +8,29 @@ const validation = require('../utilities').validation
 const generateHash = require('../utilities').generateHash
 const generateSalt = require('../utilities').generateSalt
 let isStringProvided = validation.isStringProvided
+let memberid;
 
 const router = express.Router()
+
+router.get('/verify', (request, response) => {
+    const verifyCode = request.body.verifyCode
+    const email = request.body.email
+    if(isStringProvided(verifyCode)) {
+        let theQuery = "SELECT resetcode FROM members WHERE email=$1"
+        let values = [email]
+        pool.query(theQuery, values)
+            .then(result => {
+                if(verifyCode == result.rows[0].resetcode) {
+                    memberid = result.rows[0].memberid
+                }
+            }).catch((error) => {
+                response.status(400).send({
+                    message: "Error on verification check",
+                    error: error
+                })
+            })
+    }
+});
 
 /**
  * check if user resetcode is same as in database (client or serverside?)
@@ -24,30 +45,11 @@ const router = express.Router()
  * 
  * 
  */
-router.post('/', (request, response,next) => {
-    const verifyCode = request.body.verifyCode
-    const email = request.body.email
-    if(isStringProvided(verifyCode)) {
-        let theQuery = "SELECT resetcode FROM members WHERE email=$1"
-        let values = [email]
-        pool.query(theQuery, values)
-            .then(result => {
-                if(verifyCode == result.rows[0].resetcode) {
-                    request.memberid = result.rows[0].memberid
-                    next();
-                } 
-            }).catch((error) => {
-                response.status(400).send({
-                    message: "Error on verification check",
-                    error: error
-                })
-            })
-    }
-},  (request, response) => {
+router.post('/', (request, response) => {
     let salt = generateSalt(32)
     let salted_hash = generateHash(request.body.password, salt)
     let theQuery = "UPDATE credentials SET saltedhash=$1, salt=$2 WHERE memberid=$3"
-    let values = [salted_hash, salt, request.memberid]
+    let values = [salted_hash, salt, memberid]
         pool.query(theQuery, values)
             .then(result => {
                 response.status(201).send({
@@ -59,6 +61,8 @@ router.post('/', (request, response,next) => {
                     detail: error.detail
                 })
             })
-})
+});
+
+
 
 module.exports = router
