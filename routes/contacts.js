@@ -50,14 +50,15 @@ router.get("/:memberId?", (request, response, next) => {
                         message: "Contacts not found"
                     })
                 } else {
-                    console.log(result.rows)
+                    //console.log(result.rows)
                     response.send({
-                        memberId: memberId,
+                        memberId: request.params.memberId,
                         rowCount: result.rowCount,
                         rows: result.rows
                     })
                 }
             }).catch(err => {
+                //console.log(err)
                 response.status(400).send({
                     message: "SQL Error in contact retrieve",
                     error: err
