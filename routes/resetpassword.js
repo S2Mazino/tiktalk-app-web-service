@@ -22,12 +22,15 @@ const router = express.Router()
 router.post('/verify', (request, response) => {
 
     const email = request.body.email
-    const verifyCode = request.body.verifyCode
+    const code = request.body.code
+    console.log(email);
+    console.log(code)
     let theQuery = "SELECT resetcode, memberId FROM members WHERE email=$1"
     let values = [email]
     pool.query(theQuery, values)
         .then(result => {
-            if(verifyCode == result.rows[0].resetcode) {
+            console.log(result.rows);
+            if(code === result.rows[0].resetcode) {
                 memberid = result.rows[0].memberid
                 response.status(200).send({
                     memberid: memberid
@@ -56,9 +59,15 @@ router.post('/verify', (request, response) => {
  * (UPDATE credentials SET saltedhash =$1, salt=$2 WHERE memberid=$3) 
  * (need to get memberId based off email)
  * 
+ *  *  * @apiParamExample {json} Request-Body-Example:
+ *  {
+ *      "memberid":"89",
+ *      "password":"Test123!"
+ *  }
  * 
  */
 router.post('/', (request, response) => {
+    const memberid = request.body.memberid
     let salt = generateSalt(32)
     let salted_hash = generateHash(request.body.password, salt)
     let theQuery = "UPDATE credentials SET saltedhash=$1, salt=$2 WHERE memberid=$3"
@@ -67,6 +76,7 @@ router.post('/', (request, response) => {
             .then(result => {
                 response.status(201).send({
                     success: true,
+                    message: "password changed succesfully"
                 })
             }).catch((error) => {
                 response.status(400).send({
