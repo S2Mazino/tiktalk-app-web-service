@@ -70,6 +70,9 @@ router.post('/', (request, response, next) => {
         let values = [code, email]
         pool.query(theQuery, values)
             .then(result => {
+                response.status(201).send({
+                    success: true
+                })
                 // console.log(result)
                 message = `Please enter the verification code in your app: ${code}`
                 sendEmail(sender, request.body.email, "Reset Code", message)
