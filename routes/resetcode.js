@@ -71,7 +71,8 @@ router.post('/', (request, response, next) => {
         pool.query(theQuery, values)
             .then(result => {
                 response.status(201).send({
-                    success: true
+                    success: true,
+                    message: "successful"
                 })
                 // console.log(result)
                 message = `Please enter the verification code in your app: ${code}`

@@ -8,7 +8,6 @@ const validation = require('../utilities').validation
 const generateHash = require('../utilities').generateHash
 const generateSalt = require('../utilities').generateSalt
 let isStringProvided = validation.isStringProvided
-let memberid;
 
 const router = express.Router()
 
@@ -16,13 +15,16 @@ router.get('/verify', (request, response) => {
     const verifyCode = request.body.verifyCode
     const email = request.body.email
     if(isStringProvided(verifyCode)) {
-        let theQuery = "SELECT resetcode FROM members WHERE email=$1"
+        let theQuery = "SELECT resetcode, memberId FROM members WHERE email=$1"
         let values = [email]
         pool.query(theQuery, values)
             .then(result => {
                 if(verifyCode == result.rows[0].resetcode) {
                     memberid = result.rows[0].memberid
                 }
+                response.status(200).send({
+                    memberid: memberid
+                })
             }).catch((error) => {
                 response.status(400).send({
                     message: "Error on verification check",
