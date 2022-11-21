@@ -17,11 +17,11 @@ router.post("/", (request, response, next) => {
 /*
 * get all contacts associated with the token's member id
 */
-router.get("/:memberId?", (request, response, next) => {
+router.get("/", (request, response, next) => {
     //validate member id exists
     let query = 'SELECT * FROM Members WHERE memberid=$1'
-    //let values = [request.decoded.memberid]
-    let values = [request.params.memberId]
+    let values = [request.decoded.memberid]
+    //let values = [request.params.memberId]
 
     pool.query(query, values)
         .then(result => {
@@ -41,8 +41,8 @@ router.get("/:memberId?", (request, response, next) => {
     }, (request, response) => {
         //Retrieve the member's contact
         let query = 'SELECT Members.FirstName, Members.LastName, Members.Nickname, Members.email, MemberID_B FROM Contacts INNER JOIN Members ON Contacts.MemberID_B = Members.MemberID where Contacts.MemberID_A = $1'
-        //let values = [request.decoded.memberid]
-        let values = [request.params.memberId]
+        let values = [request.decoded.memberid]
+        // let values = [request.params.memberId]
         pool.query(query, values)
             .then(result => {
                 if (result.rowCount == 0) {

@@ -73,7 +73,7 @@ router.post('/', (request, response, next) => {
             if(isValidPassword(password)) {
 
                 //We're using placeholders ($1, $2, $3) in the SQL query string to avoid SQL Injection
-                //If you want to read more: https://stackoverflow.com/a/8265319
+                //If you want to read more: https://stackoverflow.com/a/8265319       
                 let theQuery = "INSERT INTO MEMBERS(FirstName, LastName, Nickname, Email) VALUES ($1, $2, $3, $4) RETURNING Email, MemberID"
                 let values = [first, last, nickname, email]
                 pool.query(theQuery, values)
