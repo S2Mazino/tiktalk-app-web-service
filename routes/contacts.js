@@ -66,4 +66,66 @@ router.get("/", (request, response, next) => {
             })
 });
 
+/*
+* delete the friendID from the associated token's memberid
+*/
+router.delete("/:friendID?", (request, response, next) => {
+    //validate on empty parameters
+    if (!request.params.friendID) {
+        response.status(400).send({
+            message: "Missing required information"
+        })
+    } else if (isNaN(request.params.friendID)) {
+        response.status(400).send({
+            message: "Malformed parameter. friendID must be a number"
+        })
+    } else {
+        next()
+    }
+}, (request, response, next) => {
+    //memberid_a = person making the call, memberid_b = the person to be removed
+    let query = 'DELETE FROM Contacts WHERE memberid_a=$1 AND memberid_b=$2'
+    let values = [request.decoded.memberid, request.params.friendID]
+
+    pool.query(query, values)
+        .then(result => {
+            if (result.rowCount == 0) {
+                response.status(404).send({
+                    message: "Contact does not exist"
+                })
+            } else {
+                next()
+            }
+        }).catch(error => {
+            response.status(400).send({
+                message: "SQL Error in delete contact",
+                error: error
+            })
+        })
+}, (request, response) => {
+    //Now deleteing from the friendID's contact as well
+    let query = 'DELETE FROM Contacts WHERE memberid_a=$2 AND memberid_b=$1'
+    let values = [request.decoded.memberid, request.params.friendID]
+    pool.query(query, values)
+        .then(result => {
+            if (result.rowCount == 0) {
+                response.status(404).send({
+                    message: "Contacts not found"
+                })
+            } else {
+                //console.log(result.rows)
+                response.status(200).send({
+                    success: true
+                })
+            }
+        }).catch(err => {
+            //console.log(err)
+            response.status(400).send({
+                message: "SQL Error in contact delete",
+                error: err
+            })
+        })
+
+});
+
 module.exports = router
