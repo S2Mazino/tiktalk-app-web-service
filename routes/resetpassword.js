@@ -11,27 +11,38 @@ let isStringProvided = validation.isStringProvided
 
 const router = express.Router()
 
-router.get('/verify', (request, response) => {
-    const verifyCode = request.body.verifyCode
+/**
+ *  * @apiParamExample {json} Request-Body-Example:
+ *  {
+ *      "email":""email":"cfb3@fake.email",
+ *      "code":"code12345""
+ *  }
+ */
+
+router.post('/verify', (request, response) => {
+
     const email = request.body.email
-    if(isStringProvided(verifyCode)) {
-        let theQuery = "SELECT resetcode, memberId FROM members WHERE email=$1"
-        let values = [email]
-        pool.query(theQuery, values)
-            .then(result => {
-                if(verifyCode == result.rows[0].resetcode) {
-                    memberid = result.rows[0].memberid
-                }
+    const verifyCode = request.body.verifyCode
+    let theQuery = "SELECT resetcode, memberId FROM members WHERE email=$1"
+    let values = [email]
+    pool.query(theQuery, values)
+        .then(result => {
+            if(verifyCode == result.rows[0].resetcode) {
+                memberid = result.rows[0].memberid
                 response.status(200).send({
                     memberid: memberid
                 })
-            }).catch((error) => {
-                response.status(400).send({
-                    message: "Error on verification check",
-                    error: error
+            } else {
+                response.status(404).send({
+                    message: "Code Doesnt Match"
                 })
+            }
+        }).catch((error) => {
+            response.status(400).send({
+                message: "Error on verification check",
+                error: error
             })
-    }
+        })
 });
 
 /**
