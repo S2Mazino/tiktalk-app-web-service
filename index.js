@@ -35,7 +35,7 @@ app.use('/auth', middleware.checkToken, require('./routes/pushyregister.js'))
 
 app.use("/weather", require("./routes/weather.js"));
 
-app.use('/contacts', require('./routes/contacts.js'))
+app.use('/contacts', middleware.checkToken, require('./routes/contacts.js'))
 
 
 /*
