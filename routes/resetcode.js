@@ -73,12 +73,13 @@ router.post('/', (request, response, next) => {
                 // console.log(result)
                 message = `Please enter the verification code in your app: ${code}`
                 sendEmail(sender, request.body.email, "Reset Code", message)
-                }).catch((error) => {
-                    response.status(400).send({
-                        message: "other error, see detail",
-                        detail: error.detail
-                    })
+            }).catch((error) => {
+                response.status(400).send({
+                    message: "other error, see detail",
+                    detail: error.detail
                 })
-});
+            })
+        }
+);
 
 module.exports = router
