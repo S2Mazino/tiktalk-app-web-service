@@ -37,15 +37,22 @@ const router = express.Router()
  * @apiError (400: Other Error) {String} detail Information about th error
  * 
  */ 
-router.post('/', (request, response, next) => {
+router.get('/', (request, response, next) => {
 
     //Retrieve data from query params
-    const email = request.body.email
+    const email = request.query.email
+    console.log(email);
     if(isStringProvided(email)) {
         next();
+    }else{
+        response.status(400).send({
+            message: "other error, see detail",
+            detail: error.detail
+        })
     }
+
 }, (request, response, next) => {
-    const email = request.body.email
+    const email = request.query.email
     let theQuery = "SELECT * FROM members WHERE email=$1"
     let values = [email]
     pool.query(theQuery, values)
@@ -65,14 +72,14 @@ router.post('/', (request, response, next) => {
         })
 }, (request, response) => {
         const code = randomResetCode();
-        const email = request.body.email;
+        const email = request.query.email;
         let theQuery = 'UPDATE members SET resetcode =$1 WHERE email =$2'
         let values = [code, email]
         pool.query(theQuery, values)
             .then(result => {
-                // console.log(result)
+                console.log(result)
                 message = `Please enter the verification code in your app: ${code}`
-                sendEmail(sender, request.body.email, "Reset Code", message)
+                sendEmail(sender, request.query.email, "Reset Code", message)
             }).catch((error) => {
                 response.status(400).send({
                     message: "other error, see detail",
