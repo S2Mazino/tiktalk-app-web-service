@@ -10,8 +10,66 @@ const validation = require('../utilities').validation
 let isStringProvided = validation.isStringProvided
 
 
-router.post("/", (request, response, next) => {
- 
+router.post("/:friendEmail?", (request, response, next) => {
+    //validate member id exists
+    let query = 'SELECT * FROM Members WHERE memberid=$1'
+    let values = [request.decoded.memberid]
+    //let values = [request.params.memberId]
+
+    pool.query(query, values)
+        .then(result => {
+            if (result.rowCount == 0) {
+                response.status(404).send({
+                    message: "Member ID not found"
+                })
+            } else {
+                next()
+            }
+        }).catch(error => {
+            response.status(400).send({
+                message: "SQL Error in member validation",
+                error: error
+            })
+        })
+    }, (request, response, next) => {
+        //validate the friendEmail exist
+        let query = 'SELECT memberid FROM Members WHERE email = $1'
+        let values = [request.params.friendEmail]
+
+        pool.query(query, values)
+        .then(result => {
+            if (result.rowCount == 0) {
+                response.status(404).send({
+                    message: "friend email not found"
+                })
+            } else {
+                request.params.memberid = result.rows[0].memberid
+                next()
+            }
+        }).catch(error => {
+            response.status(400).send({
+                message: "SQL Error in contact validation",
+                error: error
+            })
+        })
+    },(request, response) => {
+        //Retrieve the member's contact
+        let query = 'INSERT INTO Contacts (primarykey, memberid_a, memberid_b, verified) VALUES (default, $1, $2, 1)'
+        let values = [request.decoded.memberid, request.params.memberid]
+        // let values = [request.params.memberId]
+        pool.query(query, values)
+            .then(result => {
+                //console.log(result.rows)
+                response.status(200).send({
+                    success: true
+                })
+            }).catch(err => {
+                //console.log(err)
+                response.status(400).send({
+                    message: "SQL Error in contact retrieve",
+                    error: err
+                })
+            })
 })
 
 /*
@@ -47,7 +105,7 @@ router.get("/", (request, response, next) => {
             .then(result => {
                 if (result.rowCount == 0) {
                     response.status(404).send({
-                        message: "Contacts not found"
+                        message: "No Contacts"
                     })
                 } else {
                     //console.log(result.rows)
