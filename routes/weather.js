@@ -113,7 +113,10 @@ router.get("/zipcode/:zipcode",(req, res) => {
     
                         for (let i = 0; i < 24; i++) {
                             const dt = result.hourly[i].dt;
-                            const targetTime = new Date(dt * 1000);
+                            const offset = result.hourly[i].timezone_offset;
+                            //const targetTime = new Date(dt * 1000);
+                            const targetTime = new Date((dt + offset) * 1000);
+
                             hourValue = hourHeaders[targetTime.getHours()];
                             hourlyAvgTemp = result.hourly[i].temp;
                             hourlyTempF = Math.round ((9/5)*(hourlyAvgTemp - 273.15) + 32);
@@ -141,8 +144,7 @@ router.get("/zipcode/:zipcode",(req, res) => {
                          let dayValue, day, dayTemp, dayTempF, dayTempC, minTemp, minTempF, minTempC, maxTemp, maxTempF, maxTempC, dayIconValue, dayIcon, dayPop;
                      
                          for (let i = 0; i < 7; i++) {
-                                 const targetTime = new Date(result.daily[i].dt * 1000);
-                 
+        
                                  dayValue = (Math.floor(result.daily[i].dt/86400) + 4) % 7;
                                  //hourValue = hourHeaders[targetTime.getHours()];
                                  day = dayHeaders[dayValue];
