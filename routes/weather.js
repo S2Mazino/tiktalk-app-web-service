@@ -113,7 +113,8 @@ router.get("/zipcode/:zipcode",(req, res) => {
      
                          for (let i = 0; i < 24; i++) {
                              const dt = result.hourly[i].dt;
-                             const offset = new Date().getTimezoneOffset();
+                             //const offset = new Date().getTimezoneOffset();
+                             const offset = result.timezone_offset;
                              const targetTime = new Date((dt + offset) * 1000);
                              hourValue = hourHeaders[targetTime.getHours()];
                              hourlyAvgTemp = result.hourly[i].temp;
