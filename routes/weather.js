@@ -174,6 +174,7 @@ router.get("/zipcode/:zipcode",(req, res) => {
                          }   
 
                         res.status(200).send({
+                            city: city,
                             current: {
                                 tempF: currTempF,
                                 tempC: currTempC,
@@ -183,7 +184,6 @@ router.get("/zipcode/:zipcode",(req, res) => {
                             },
                             hourly,
                             daily,
-                            city: city,
                         });
                     }
                 });
@@ -336,6 +336,7 @@ router.get("/lat-lon/:lat/:lon", (req, res) => {
                          }   
 
                         res.status(200).send({
+                            city: city,
                             current: {
                                 tempF: currTempF,
                                 tempC: currTempC,
@@ -345,7 +346,6 @@ router.get("/lat-lon/:lat/:lon", (req, res) => {
                             },
                             hourly,
                             daily,
-                            city: city,
                         });
                     }
                 });
