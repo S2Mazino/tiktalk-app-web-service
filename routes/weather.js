@@ -113,10 +113,9 @@ router.get("/zipcode/:zipcode",(req, res) => {
      
                          for (let i = 0; i < 24; i++) {
                              const dt = result.hourly[i].dt;
-                             //const offset = new Date().getTimezoneOffset();
                              const offset = result.timezone_offset;
-                             const targetTime = new Date((dt + offset) * 1000);
-                             hourValue = hourHeaders[targetTime.getHours()];
+                             const targetTime = new Date((dt + offset) * 1000).getHours();
+                             hourValue = hourHeaders[targetTime];
                              hourlyAvgTemp = result.hourly[i].temp;
                              hourlyTempF = Math.round ((9/5)*(hourlyAvgTemp - 273.15) + 32);
                              hourlyTempC = Math.round (hourlyAvgTemp - 273.15);
@@ -274,8 +273,9 @@ router.get("/lat-lon/:lat/:lon", (req, res) => {
     
                         for (let i = 0; i < 24; i++) {
                             const dt = result.hourly[i].dt;
-                            const targetTime = new Date(dt * 1000);
-                            hourValue = hourHeaders[targetTime.getHours()];
+                            const offset = result.timezone_offset;
+                            const targetTime = new Date((dt + offset) * 1000).getHours();
+                            hourValue = hourHeaders[targetTime];
                             hourlyAvgTemp = result.hourly[i].temp;
                             hourlyTempF = Math.round ((9/5)*(hourlyAvgTemp - 273.15) + 32);
                             hourlyTempC = Math.round (hourlyAvgTemp - 273.15);
@@ -292,6 +292,7 @@ router.get("/lat-lon/:lat/:lon", (req, res) => {
                                 pop: hourlyPop,
                             };
                         }  
+
 
                         /***********************************************
                         * The data need for the daily weather forecast *
