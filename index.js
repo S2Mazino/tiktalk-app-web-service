@@ -50,7 +50,7 @@ app.get("/", (request, response) => {
     response.writeHead(200, {'Content-Type': 'text/html'});
     for (i = 1; i < 7; i++) {
         //write a response to the client
-        response.write('<h' + i + ' style="color:blue">Welcome to Tiktalk Application!</h' + i + '>'); 
+        response.write('<h' + i + ' style="color:blue">Welcome to TikTalk Application V.2.1!</h' + i + '>'); 
     }
     response.end(); //end the response
 });
