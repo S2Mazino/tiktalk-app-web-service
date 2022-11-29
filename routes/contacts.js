@@ -66,9 +66,31 @@ router.post("/", (request, response, next) => {
                 error: error
             })
         })
+    },(request, response, next) => {
+        //validate if there is no existing contact
+        let query = "SELECT * FROM CONTACTS WHERE (memberid_a = $1 AND memberid_b = $2) OR (memberid_a = $2 AND memberid_b = $1)"
+        let values = [request.decoded.memberid, request.params.friendId]
+        pool.query(query, values)
+            .then(result => {
+                if(result.rowCount == 0) {
+                    next()
+                } else {
+                    response.status(204).send({
+                        message: "Contact incoming/outgoing exist already",
+                    })
+                }
+
+            }).catch(err => {
+                //console.log(err)
+                response.status(400).send({
+                    message: "SQL Error in contact exist validation",
+                    error: err
+                })
+            })
+
     },(request, response) => {
         //Add a contact request
-        let query = 'IF NOT EXIST (SELECT * FROM CONTACTS WHERE memberid_a = $1 AND memberid_b = $2) INSERT INTO Contacts (primarykey, memberid_a, memberid_b, verified) VALUES (default, $1, $2, 0)'
+        let query = 'INSERT INTO Contacts (primarykey, memberid_a, memberid_b, verified) VALUES (default, $1, $2, 0)'
         let values = [request.decoded.memberid, request.params.friendId]
         pool.query(query, values)
             .then(result => {
