@@ -1,5 +1,6 @@
 //express is the framework we're going to use to handle requests
 const express = require('express')
+const { isValidEmail } = require('../utilities/validationUtils')
 
 //Access the connection to Heroku Database
 const pool = require('../utilities/exports').pool
@@ -11,35 +12,48 @@ let isStringProvided = validation.isStringProvided
 
 
 //outgoing request send
-router.post("/:friendEmail?", (request, response, next) => {
-    //validate member id exists
-    let query = 'SELECT * FROM Members WHERE memberid=$1'
-    let values = [request.decoded.memberid]
+router.post("/", (request, response, next) => {
+    const email = request.body.email
+    if(isStringProvided(email)) {
+        if(isValidEmail(email)) {
+            //validate member id exists
+            let query = 'SELECT * FROM Members WHERE memberid=$1'
+            let values = [request.decoded.memberid]
 
-    pool.query(query, values)
-        .then(result => {
-            if (result.rowCount == 0) {
-                response.status(404).send({
-                    message: "Member ID not found"
+            pool.query(query, values)
+                .then(result => {
+                    if (result.rowCount == 0) {
+                        response.status(204).send({
+                            message: "Member ID not found"
+                        })
+                    } else {
+                        next()
+                    }
+                }).catch(error => {
+                    response.status(400).send({
+                        message: "SQL Error in member validation",
+                        error: error
+                    })
                 })
-            } else {
-                next()
-            }
-        }).catch(error => {
+        } else {
             response.status(400).send({
-                message: "SQL Error in member validation",
-                error: error
+                message: "Missing email requirement"
             })
+        }
+    } else {
+        response.status(400).send({
+            message: "Missing required information"
         })
+    }
     }, (request, response, next) => {
         //validate the friendEmail exist
         let query = 'SELECT memberid FROM Members WHERE email = $1'
-        let values = [request.params.friendEmail]
+        let values = [request.body.email]
 
         pool.query(query, values)
         .then(result => {
             if (result.rowCount == 0) {
-                response.status(404).send({
+                response.status(204).send({
                     message: "friend email not found"
                 })
             } else {
@@ -54,14 +68,20 @@ router.post("/:friendEmail?", (request, response, next) => {
         })
     },(request, response) => {
         //Add a contact request
-        let query = 'INSERT INTO Contacts (primarykey, memberid_a, memberid_b, verified) VALUES (default, $1, $2, 0)'
+        let query = 'IF NOT EXIST (SELECT * FROM CONTACTS WHERE memberid_a = $1 AND memberid_b = $2) INSERT INTO Contacts (primarykey, memberid_a, memberid_b, verified) VALUES (default, $1, $2, 0)'
         let values = [request.decoded.memberid, request.params.friendId]
         pool.query(query, values)
             .then(result => {
-                //console.log(result.rows)
-                response.status(200).send({
-                    success: true
-                })
+                if(result.rowCount == 0) {
+                    response.status(204).send({
+                        message: "Contact send request already exist"
+                    })
+                } else {
+                    //console.log(result.rows)
+                    response.status(200).send({
+                        success: true
+                    })
+                }
             }).catch(err => {
                 //console.log(err)
                 response.status(400).send({
@@ -83,7 +103,7 @@ router.get("/", (request, response, next) => {
     pool.query(query, values)
         .then(result => {
             if (result.rowCount == 0) {
-                response.status(404).send({
+                response.status(204).send({
                     message: "Member ID not found"
                 })
             } else {
@@ -103,7 +123,7 @@ router.get("/", (request, response, next) => {
         pool.query(query, values)
             .then(result => {
                 if (result.rowCount == 0) {
-                    response.status(404).send({
+                    response.status(204).send({
                         message: "No Contacts"
                     })
                 } else {
@@ -147,7 +167,7 @@ router.delete("/:friendID?", (request, response, next) => {
     pool.query(query, values)
         .then(result => {
             if (result.rowCount == 0) {
-                response.status(404).send({
+                response.status(204).send({
                     message: "Contact does not exist"
                 })
             } else {
@@ -176,7 +196,7 @@ router.get("/search", (request, response, next) => {
     pool.query(query, values)
         .then(result => {
             if (result.rowCount == 0) {
-                response.status(404).send({
+                response.status(204).send({
                     message: "Member ID not found"
                 })
             } else {
@@ -196,7 +216,7 @@ router.get("/search", (request, response, next) => {
         pool.query(query, values)
             .then(result => {
                 if (result.rowCount == 0) {
-                    response.status(404).send({
+                    response.status(204).send({
                         message: "No Contacts"
                     })
                 } else {
@@ -228,7 +248,7 @@ router.get("/request", (request, response, next) => {
     pool.query(query, values)
         .then(result => {
             if (result.rowCount == 0) {
-                response.status(404).send({
+                response.status(204).send({
                     message: "Member ID not found"
                 })
             } else {
@@ -248,7 +268,7 @@ router.get("/request", (request, response, next) => {
         pool.query(query, values)
             .then(result => {
                 if (result.rowCount == 0) {
-                    response.status(404).send({
+                    response.status(204).send({
                         message: "No Contacts"
                     })
                 } else {
