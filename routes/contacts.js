@@ -23,7 +23,7 @@ router.post("/", (request, response, next) => {
             pool.query(query, values)
                 .then(result => {
                     if (result.rowCount == 0) {
-                        response.status(204).send({
+                        response.status(400).send({
                             message: "Member ID not found"
                         })
                     } else {
@@ -53,7 +53,7 @@ router.post("/", (request, response, next) => {
         pool.query(query, values)
         .then(result => {
             if (result.rowCount == 0) {
-                response.status(204).send({
+                response.status(400).send({
                     message: "friend email not found"
                 })
             } else {
@@ -75,7 +75,7 @@ router.post("/", (request, response, next) => {
                 if(result.rowCount == 0) {
                     next()
                 } else {
-                    response.status(204).send({
+                    response.status(400).send({
                         message: "Contact incoming/outgoing exist already",
                     })
                 }
@@ -95,7 +95,7 @@ router.post("/", (request, response, next) => {
         pool.query(query, values)
             .then(result => {
                 if(result.rowCount == 0) {
-                    response.status(204).send({
+                    response.status(400).send({
                         message: "Contact send request already exist"
                     })
                 } else {
@@ -189,7 +189,7 @@ router.delete("/:friendID?", (request, response, next) => {
     pool.query(query, values)
         .then(result => {
             if (result.rowCount == 0) {
-                response.status(204).send({
+                response.status(400).send({
                     message: "Contact does not exist"
                 })
             } else {
