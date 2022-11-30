@@ -108,9 +108,9 @@ router.get('/', (request, response, next) => {
                     {
                         "email": request.auth.email,
                         "memberid": result.rows[0].memberid,
-                        "nickname":result.rows[0].memberid,
-                        "firstname":result.rows[0].memberid,
-                        "lastname":result.rows[0].memberid
+                        "nickname":result.rows[0].nickname,
+                        "firstname":result.rows[0].firstname,
+                        "lastname":result.rows[0].lastname
                     },
                     config.secret,
                     { 
