@@ -310,6 +310,134 @@ router.get("/request", (request, response, next) => {
             })
 });
 
+//accept incoming request
+router.post("/accept", (request, response, next) => {
+    const friendID = request.body.memberid
+    if(!request.body.memberid) {
+        if(isNaN(request.body.memberid)) {
+            //validate member id exists
+            let query = 'SELECT * FROM Members WHERE memberid=$1'
+            let values = [request.decoded.memberid]
+
+            pool.query(query, values)
+                .then(result => {
+                    if (result.rowCount == 0) {
+                        response.status(400).send({
+                            message: "Member ID not found"
+                        })
+                    } else {
+                        next()
+                    }
+                }).catch(error => {
+                    response.status(400).send({
+                        message: "SQL Error in member validation",
+                        error: error
+                    })
+                })
+        } else {
+            response.status(400).send({
+                message: "Missing friendID requirement"
+            })
+        }
+    } else {
+        response.status(400).send({
+            message: "Missing required information"
+        })
+    }
+    }, (request, response, next) => {
+        //validate the friendEmail exist
+        let query = 'SELECT memberid FROM Members WHERE memberid = $1'
+        let values = [request.body.memberid]
+
+        pool.query(query, values)
+        .then(result => {
+            if (result.rowCount == 0) {
+                response.status(400).send({
+                    message: "friend ID not found"
+                })
+            } else {
+                request.params.friendId = result.rows[0].memberid
+                next()
+            }
+        }).catch(error => {
+            response.status(400).send({
+                message: "SQL Error in contact validation",
+                error: error
+            })
+        })
+    },(request, response, next) => {
+        //validate if there is no existing contact
+        let query = "SELECT * FROM CONTACTS WHERE memberid_a = $2 AND memberid_b = $1"
+        let values = [request.decoded.memberid, request.params.friendId]
+        pool.query(query, values)
+            .then(result => {
+                if(result.rowCount == 0) {
+                    next()
+                } else {
+                    response.status(400).send({
+                        message: "Contact incoming/outgoing exist already",
+                    })
+                }
+
+            }).catch(err => {
+                //console.log(err)
+                response.status(400).send({
+                    message: "SQL Error in contact exist validation",
+                    error: err
+                })
+            })
+
+    },(request, response, next) => {
+        //UPDATE the existing contact that sent the request
+        //let query = 'INSERT INTO Contacts (primarykey, memberid_a, memberid_b, verified) VALUES (default, $2, $1, 1)'
+        let query = 'UPDATE Contacts SET verified = 1 WHERE memberid_a = $1 AND memberid_b = $2'
+        let values = [request.decoded.memberid, request.params.friendId]
+        pool.query(query, values)
+            .then(result => {
+                if(result.rowCount == 0) {
+                    response.status(400).send({
+                        message: "Contact's send request was already verified"
+                    })
+                } else {
+                    //console.log(result.rows)
+                    // response.status(200).send({
+                    //     success: true
+                    // })
+                    next()
+                }
+            }).catch(err => {
+                //console.log(err)
+                response.status(400).send({
+                    message: "SQL Error in contact update",
+                    error: err
+                })
+            })
+    }, (request, response) => {
+        //Add a contact request
+        let query = 'INSERT INTO Contacts (primarykey, memberid_a, memberid_b, verified) VALUES (default, $2, $1, 1)'
+        let values = [request.decoded.memberid, request.params.friendId]
+        pool.query(query, values)
+            .then(result => {
+                if(result.rowCount == 0) {
+                    response.status(400).send({
+                        message: "Contact send request already exist"
+                    })
+                } else {
+                    //console.log(result.rows)
+                    response.status(200).send({
+                        success: true
+                    })
+                }
+            }).catch(err => {
+                //console.log(err)
+                response.status(400).send({
+                    message: "SQL Error in contact accept insert",
+                    error: err
+                })
+            })
+
+})
+
 
 
 module.exports = router
