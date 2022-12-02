@@ -107,31 +107,32 @@ router.get("/zipcode/:zipcode",(req, res) => {
                         * The data need for the hourly weather forecast *
                         ************************************************/
                         
-                        let hourly = [];
-                        const hourHeaders = [ '12AM', '1AM', '2AM', '3AM', '4AM', '5AM', '6AM', '7AM', '8AM', '9AM', '10AM', '11AM', '12PM', '1PM', '2PM', '3PM', '4PM', '5PM', '6PM', '7PM', '8PM', '9PM', '10PM', '11PM', '12Pm']; 
-                        let hourValue, hourlyAvgTemp, hourlyTempF, hourlyTempC, hourlyIconValue, hourlyIcon, hourlyPop;
-    
-                        for (let i = 0; i < 24; i++) {
-                            const dt = result.hourly[i].dt;
-                            const targetTime = new Date(dt * 1000);
-                            hourValue = hourHeaders[targetTime.getHours()];
-                            hourlyAvgTemp = result.hourly[i].temp;
-                            hourlyTempF = Math.round ((9/5)*(hourlyAvgTemp - 273.15) + 32);
-                            hourlyTempC = Math.round (hourlyAvgTemp - 273.15);
-                            hourlyIconValue = result.hourly[i].weather[0].icon;
-                            hourlyIcon = 'http://openweathermap.org/img/wn/' + hourlyIconValue + '@4x.png'
-                            hourlyPop = result.hourly[i].pop * 100;
-    
-                            hourly[i] = {
-                                hours: hourValue,
-                                tempF: hourlyTempF,
-                                tempC: hourlyTempC,
-                                iconValue: hourlyIconValue,
-                                icon: hourlyIcon,
-                                pop: hourlyPop,
-                            };
-                        }  
-
+                         let hourly = [];
+                         const hourHeaders = [ '12AM', '1AM', '2AM', '3AM', '4AM', '5AM', '6AM', '7AM', '8AM', '9AM', '10AM', '11AM', '12PM', '1PM', '2PM', '3PM', '4PM', '5PM', '6PM', '7PM', '8PM', '9PM', '10PM', '11PM', '12Pm']; 
+                         let hourValue, hourlyAvgTemp, hourlyTempF, hourlyTempC, hourlyIconValue, hourlyIcon, hourlyPop;
+     
+                         for (let i = 0; i < 24; i++) {
+                             const dt = result.hourly[i].dt;
+                             const offset = result.timezone_offset;
+                             const targetTime = new Date((dt + offset) * 1000).getHours();
+                             hourValue = hourHeaders[targetTime];
+                             hourlyAvgTemp = result.hourly[i].temp;
+                             hourlyTempF = Math.round ((9/5)*(hourlyAvgTemp - 273.15) + 32);
+                             hourlyTempC = Math.round (hourlyAvgTemp - 273.15);
+                             hourlyIconValue = result.hourly[i].weather[0].icon;
+                             hourlyIcon = 'http://openweathermap.org/img/wn/' + hourlyIconValue + '@4x.png'
+                             hourlyPop = result.hourly[i].pop * 100;
+     
+                             hourly[i] = {
+                                 hours: hourValue,
+                                 tempF: hourlyTempF,
+                                 tempC: hourlyTempC,
+                                 iconValue: hourlyIconValue,
+                                 icon: hourlyIcon,
+                                 pop: hourlyPop,
+                             };
+                         }  
+ 
                         /***********************************************
                         * The data need for the daily weather forecast *
                         ***********************************************/
@@ -141,8 +142,7 @@ router.get("/zipcode/:zipcode",(req, res) => {
                          let dayValue, day, dayTemp, dayTempF, dayTempC, minTemp, minTempF, minTempC, maxTemp, maxTempF, maxTempC, dayIconValue, dayIcon, dayPop;
                      
                          for (let i = 0; i < 7; i++) {
-                                 const targetTime = new Date(result.daily[i].dt * 1000);
-                 
+                                
                                  dayValue = (Math.floor(result.daily[i].dt/86400) + 4) % 7;
                                  //hourValue = hourHeaders[targetTime.getHours()];
                                  day = dayHeaders[dayValue];
@@ -174,6 +174,7 @@ router.get("/zipcode/:zipcode",(req, res) => {
                          }   
 
                         res.status(200).send({
+                            city: city,
                             current: {
                                 tempF: currTempF,
                                 tempC: currTempC,
@@ -183,7 +184,6 @@ router.get("/zipcode/:zipcode",(req, res) => {
                             },
                             hourly,
                             daily,
-                            city: city,
                         });
                     }
                 });
@@ -273,8 +273,9 @@ router.get("/lat-lon/:lat/:lon", (req, res) => {
     
                         for (let i = 0; i < 24; i++) {
                             const dt = result.hourly[i].dt;
-                            const targetTime = new Date(dt * 1000);
-                            hourValue = hourHeaders[targetTime.getHours()];
+                            const offset = result.timezone_offset;
+                            const targetTime = new Date((dt + offset) * 1000).getHours();
+                            hourValue = hourHeaders[targetTime];
                             hourlyAvgTemp = result.hourly[i].temp;
                             hourlyTempF = Math.round ((9/5)*(hourlyAvgTemp - 273.15) + 32);
                             hourlyTempC = Math.round (hourlyAvgTemp - 273.15);
@@ -291,6 +292,7 @@ router.get("/lat-lon/:lat/:lon", (req, res) => {
                                 pop: hourlyPop,
                             };
                         }  
+
 
                         /***********************************************
                         * The data need for the daily weather forecast *
@@ -334,6 +336,7 @@ router.get("/lat-lon/:lat/:lon", (req, res) => {
                          }   
 
                         res.status(200).send({
+                            city: city,
                             current: {
                                 tempF: currTempF,
                                 tempC: currTempC,
@@ -343,7 +346,6 @@ router.get("/lat-lon/:lat/:lon", (req, res) => {
                             },
                             hourly,
                             daily,
-                            city: city,
                         });
                     }
                 });

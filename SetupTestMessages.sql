@@ -20,7 +20,7 @@ INSERT INTO
 SELECT 1, Members.MemberId
 FROM Members
 WHERE Members.Email='2twinparadox@gmail.com'
-    OR Members.Email='team3tiktalk@gmail.com'
+    OR Members.Email='team3tiktalk2@gmail.com'
     OR Members.Email='cfb3@uw.edu'
 RETURNING *;
 
@@ -42,7 +42,7 @@ SELECT
     'hi',
     Members.MemberId
 FROM Members
-WHERE Members.Email='team3tiktalk@gmail.com'
+WHERE Members.Email='team3tiktalk2@gmail.com'
 RETURNING *;
 
 INSERT INTO 
@@ -72,7 +72,7 @@ SELECT
     'Enough with the pleasantries',
     Members.MemberId
 FROM Members
-WHERE Members.Email='team3tiktalk@gmail.com'
+WHERE Members.Email='team3tiktalk2@gmail.com'
 RETURNING *;
 
 INSERT INTO 
@@ -82,7 +82,7 @@ SELECT
     'Lets get down to business',
     Members.MemberId
 FROM Members
-WHERE Members.Email='team3tiktalk@gmail.com'
+WHERE Members.Email='team3tiktalk2@gmail.com'
 RETURNING *;
 
 INSERT INTO 
@@ -122,7 +122,7 @@ SELECT
     'Im completly blocked by team3',
     Members.MemberId
 FROM Members
-WHERE Members.Email='team3tiktalk@gmail.com'
+WHERE Members.Email='team3tiktalk2@gmail.com'
 RETURNING *;
 
 INSERT INTO 
@@ -142,7 +142,7 @@ SELECT
     'Woah now. Im waiting on Knock...',
     Members.MemberId
 FROM Members
-WHERE Members.Email='team3tiktalk@gmail.com'
+WHERE Members.Email='team3tiktalk2@gmail.com'
 RETURNING *;
 
 INSERT INTO 
@@ -253,7 +253,7 @@ SELECT
     'If I get it by tmorrow AM',
     Members.MemberId
 FROM Members
-WHERE Members.Email='team3tiktalk@gmail.com'
+WHERE Members.Email='team3tiktalk2@gmail.com'
 RETURNING *;
 
 INSERT INTO 
@@ -263,7 +263,7 @@ SELECT
     'i can finish by the aftershock',
     Members.MemberId
 FROM Members
-WHERE Members.Email='team3tiktalk@gmail.com'
+WHERE Members.Email='team3tiktalk2@gmail.com'
 RETURNING *;
 
 INSERT INTO 
@@ -273,7 +273,7 @@ SELECT
     'aftershock',
     Members.MemberId
 FROM Members
-WHERE Members.Email='team3tiktalk@gmail.com'
+WHERE Members.Email='team3tiktalk2@gmail.com'
 RETURNING *;
 
 INSERT INTO 
@@ -283,7 +283,7 @@ SELECT
     'afternoon!!! stupid autocorrect',
     Members.MemberId
 FROM Members
-WHERE Members.Email='team3tiktalk@gmail.com'
+WHERE Members.Email='team3tiktalk2@gmail.com'
 RETURNING *;
 
 INSERT INTO 
@@ -323,7 +323,7 @@ SELECT
     '3 2 1 Break',
     Members.MemberId
 FROM Members
-WHERE Members.Email='team3tiktalk@gmail.com'
+WHERE Members.Email='team3tiktalk2@gmail.com'
 RETURNING *;
 
 INSERT INTO 

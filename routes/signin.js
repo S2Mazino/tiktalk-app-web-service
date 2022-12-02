@@ -107,7 +107,10 @@ router.get('/', (request, response, next) => {
                 let token = jwt.sign(
                     {
                         "email": request.auth.email,
-                        "memberid": result.rows[0].memberid
+                        "memberid": result.rows[0].memberid,
+                        "nickname":result.rows[0].nickname,
+                        "firstname":result.rows[0].firstname,
+                        "lastname":result.rows[0].lastname
                     },
                     config.secret,
                     { 
@@ -118,10 +121,7 @@ router.get('/', (request, response, next) => {
                 response.json({
                     success: true,
                     message: 'Authentication successful!',
-                    token: token,
-                    firstname: result.rows[0].firstname,
-                    lastname: result.rows[0].lastname,
-                    nickname: result.rows[0].nickname,
+                    token: token
                 })
             } else {
                 //credentials dod not match
