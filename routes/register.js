@@ -134,7 +134,7 @@ router.post('/', (request, response, next) => {
                     email: request.body.email
                 })
                 
-                const url = `https://tiktalk-app-web-service.herokuapp.com/auth/verify?id=${values[0]}`
+                const url = `https://tcss450-2022au-group3.herokuapp.com/auth/verify?id=${values[0]}`
                 //console.log(url)
                 message = `Please click this link to confirm your email: <a href=${url}>${url}</a>`
                 sendEmail(sender, request.body.email,"Welcome to our app", message)

@@ -4,7 +4,7 @@ CREATE TABLE Members (MemberID SERIAL PRIMARY KEY,
 		              LastName VARCHAR(255) NOT NULL,
                       Nickname VARCHAR(255) NOT NULL UNIQUE,
                       Email VARCHAR(255) NOT NULL UNIQUE,
-                      Verification INT DEFAULT 0
+                      Verification INT DEFAULT 0,
                       ResetCode INT DEFAULT 0
 );
 
