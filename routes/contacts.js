@@ -312,38 +312,25 @@ router.get("/request", (request, response, next) => {
 
 //accept incoming request
 router.post("/accept", (request, response, next) => {
-    const friendID = request.body.memberid
-    if(!request.body.memberid) {
-        if(isNaN(request.body.memberid)) {
-            //validate member id exists
-            let query = 'SELECT * FROM Members WHERE memberid=$1'
-            let values = [request.decoded.memberid]
+    //validate member id exists
+    let query = 'SELECT * FROM Members WHERE memberid=$1'
+    let values = [request.decoded.memberid]
 
-            pool.query(query, values)
-                .then(result => {
-                    if (result.rowCount == 0) {
-                        response.status(400).send({
-                            message: "Member ID not found"
-                        })
-                    } else {
-                        next()
-                    }
-                }).catch(error => {
-                    response.status(400).send({
-                        message: "SQL Error in member validation",
-                        error: error
-                    })
+    pool.query(query, values)
+        .then(result => {
+            if (result.rowCount == 0) {
+                response.status(400).send({
+                    message: "Member ID not found"
                 })
-        } else {
+            } else {
+                next()
+            }
+        }).catch(error => {
             response.status(400).send({
-                message: "Missing friendID requirement"
+                message: "SQL Error in member validation",
+                error: error
             })
-        }
-    } else {
-        response.status(400).send({
-            message: "Missing required information"
         })
-    }
     }, (request, response, next) => {
         //validate the friendEmail exist
         let query = 'SELECT memberid FROM Members WHERE memberid = $1'
