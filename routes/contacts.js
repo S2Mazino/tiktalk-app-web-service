@@ -284,7 +284,7 @@ router.get("/request", (request, response, next) => {
         })
     }, (request, response) => {
         //Retrieve the member's contact
-        let query = 'SELECT Members.FirstName, Members.LastName, Members.Nickname, Members.email, MemberID_B FROM Contacts INNER JOIN Members ON Contacts.MemberID_B = Members.MemberID where Contacts.MemberID_B = $1 AND Contacts.verified = 0'
+        let query = 'SELECT Members.FirstName, Members.LastName, Members.Nickname, Members.email, MemberID_A FROM Contacts INNER JOIN Members ON Contacts.MemberID_A = Members.MemberID where Contacts.MemberID_B = 15 AND Contacts.verified = 0;'
         let values = [request.decoded.memberid]
         // let values = [request.params.memberId]
         pool.query(query, values)
