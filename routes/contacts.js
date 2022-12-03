@@ -284,7 +284,7 @@ router.get("/request", (request, response, next) => {
         })
     }, (request, response) => {
         //Retrieve the member's contact
-        let query = 'SELECT Members.FirstName, Members.LastName, Members.Nickname, Members.email, MemberID_B FROM Contacts INNER JOIN Members ON Contacts.MemberID_B = Members.MemberID where Contacts.MemberID_B = $1 AND Contacts.verified = 0'
+        let query = 'SELECT Members.FirstName, Members.LastName, Members.Nickname, Members.email, MemberID_A FROM Contacts INNER JOIN Members ON Contacts.MemberID_A = Members.MemberID where Contacts.MemberID_B = $1 AND Contacts.verified = 0;'
         let values = [request.decoded.memberid]
         // let values = [request.params.memberId]
         pool.query(query, values)
@@ -312,38 +312,25 @@ router.get("/request", (request, response, next) => {
 
 //accept incoming request
 router.post("/accept", (request, response, next) => {
-    const friendID = request.body.memberid
-    if(!request.body.memberid) {
-        if(isNaN(request.body.memberid)) {
-            //validate member id exists
-            let query = 'SELECT * FROM Members WHERE memberid=$1'
-            let values = [request.decoded.memberid]
+    //validate member id exists
+    let query = 'SELECT * FROM Members WHERE memberid=$1'
+    let values = [request.decoded.memberid]
 
-            pool.query(query, values)
-                .then(result => {
-                    if (result.rowCount == 0) {
-                        response.status(400).send({
-                            message: "Member ID not found"
-                        })
-                    } else {
-                        next()
-                    }
-                }).catch(error => {
-                    response.status(400).send({
-                        message: "SQL Error in member validation",
-                        error: error
-                    })
+    pool.query(query, values)
+        .then(result => {
+            if (result.rowCount == 0) {
+                response.status(400).send({
+                    message: "Member ID not found"
                 })
-        } else {
+            } else {
+                next()
+            }
+        }).catch(error => {
             response.status(400).send({
-                message: "Missing friendID requirement"
+                message: "SQL Error in member validation",
+                error: error
             })
-        }
-    } else {
-        response.status(400).send({
-            message: "Missing required information"
         })
-    }
     }, (request, response, next) => {
         //validate the friendEmail exist
         let query = 'SELECT memberid FROM Members WHERE memberid = $1'
@@ -367,7 +354,7 @@ router.post("/accept", (request, response, next) => {
         })
     },(request, response, next) => {
         //validate if there is no existing contact
-        let query = "SELECT * FROM CONTACTS WHERE memberid_a = $2 AND memberid_b = $1"
+        let query = "SELECT * FROM CONTACTS WHERE memberid_a = $1 AND memberid_b = $2"
         let values = [request.decoded.memberid, request.params.friendId]
         pool.query(query, values)
             .then(result => {
@@ -390,7 +377,7 @@ router.post("/accept", (request, response, next) => {
     },(request, response, next) => {
         //UPDATE the existing contact that sent the request
         //let query = 'INSERT INTO Contacts (primarykey, memberid_a, memberid_b, verified) VALUES (default, $2, $1, 1)'
-        let query = 'UPDATE Contacts SET verified = 1 WHERE memberid_a = $1 AND memberid_b = $2'
+        let query = 'UPDATE Contacts SET verified = 1 WHERE memberid_a = $2 AND memberid_b = $1'
         let values = [request.decoded.memberid, request.params.friendId]
         pool.query(query, values)
             .then(result => {
@@ -414,7 +401,7 @@ router.post("/accept", (request, response, next) => {
             })
     }, (request, response) => {
         //Add a contact request
-        let query = 'INSERT INTO Contacts (primarykey, memberid_a, memberid_b, verified) VALUES (default, $2, $1, 1)'
+        let query = 'INSERT INTO Contacts (primarykey, memberid_a, memberid_b, verified) VALUES (default, $1, $2, 1)'
         let values = [request.decoded.memberid, request.params.friendId]
         pool.query(query, values)
             .then(result => {
