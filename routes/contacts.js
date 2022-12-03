@@ -354,7 +354,7 @@ router.post("/accept", (request, response, next) => {
         })
     },(request, response, next) => {
         //validate if there is no existing contact
-        let query = "SELECT * FROM CONTACTS WHERE memberid_a = $2 AND memberid_b = $1"
+        let query = "SELECT * FROM CONTACTS WHERE memberid_a = $1 AND memberid_b = $2"
         let values = [request.decoded.memberid, request.params.friendId]
         pool.query(query, values)
             .then(result => {
@@ -377,7 +377,7 @@ router.post("/accept", (request, response, next) => {
     },(request, response, next) => {
         //UPDATE the existing contact that sent the request
         //let query = 'INSERT INTO Contacts (primarykey, memberid_a, memberid_b, verified) VALUES (default, $2, $1, 1)'
-        let query = 'UPDATE Contacts SET verified = 1 WHERE memberid_a = $1 AND memberid_b = $2'
+        let query = 'UPDATE Contacts SET verified = 1 WHERE memberid_a = $2 AND memberid_b = $1'
         let values = [request.decoded.memberid, request.params.friendId]
         pool.query(query, values)
             .then(result => {
@@ -401,7 +401,7 @@ router.post("/accept", (request, response, next) => {
             })
     }, (request, response) => {
         //Add a contact request
-        let query = 'INSERT INTO Contacts (primarykey, memberid_a, memberid_b, verified) VALUES (default, $2, $1, 1)'
+        let query = 'INSERT INTO Contacts (primarykey, memberid_a, memberid_b, verified) VALUES (default, $1, $2, 1)'
         let values = [request.decoded.memberid, request.params.friendId]
         pool.query(query, values)
             .then(result => {
