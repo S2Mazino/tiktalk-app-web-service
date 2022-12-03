@@ -101,7 +101,7 @@ router.get("/zipcode/:zipcode",(req, res) => {
                             (letter) => letter.toUpperCase()
                         );
                         const currIconValue = result.current.weather[0].icon;
-                        const currIcon = 'http://openweathermap.org/img/wn/' + currIconValue + '@4x.png'
+                        const currIcon = 'https://openweathermap.org/img/wn/' + currIconValue + '@4x.png'
 
                         /************************************************
                         * The data need for the hourly weather forecast *
@@ -120,7 +120,7 @@ router.get("/zipcode/:zipcode",(req, res) => {
                              hourlyTempF = Math.round ((9/5)*(hourlyAvgTemp - 273.15) + 32);
                              hourlyTempC = Math.round (hourlyAvgTemp - 273.15);
                              hourlyIconValue = result.hourly[i].weather[0].icon;
-                             hourlyIcon = 'http://openweathermap.org/img/wn/' + hourlyIconValue + '@4x.png'
+                             hourlyIcon = 'https://openweathermap.org/img/wn/' + hourlyIconValue + '@4x.png'
                              hourlyPop = result.hourly[i].pop * 100;
      
                              hourly[i] = {
@@ -156,7 +156,7 @@ router.get("/zipcode/:zipcode",(req, res) => {
                                  maxTempF = Math.round ((9/5)*(maxTemp - 273.15) + 32);
                                  maxTempC = Math.round (maxTemp - 273.15);
                                  dayIconValue = result.daily[i].weather[0].icon;
-                                 dayIcon = 'http://openweathermap.org/img/wn/' + dayIconValue + '@4x.png'
+                                 dayIcon = 'https://openweathermap.org/img/wn/' + dayIconValue + '@4x.png'
                                  dayPop = result.daily[i].pop * 100;
 
                                  daily[i] = {
@@ -261,7 +261,7 @@ router.get("/lat-lon/:lat/:lon", (req, res) => {
                             (letter) => letter.toUpperCase()
                         );
                         const currIconValue = result.current.weather[0].icon;
-                        const currIcon = 'http://openweathermap.org/img/wn/' + currIconValue + '@4x.png'
+                        const currIcon = 'https://openweathermap.org/img/wn/' + currIconValue + '@4x.png'
 
                         /************************************************
                         * The data need for the hourly weather forecast *
@@ -280,7 +280,7 @@ router.get("/lat-lon/:lat/:lon", (req, res) => {
                             hourlyTempF = Math.round ((9/5)*(hourlyAvgTemp - 273.15) + 32);
                             hourlyTempC = Math.round (hourlyAvgTemp - 273.15);
                             hourlyIconValue = result.hourly[i].weather[0].icon;
-                            hourlyIcon = 'http://openweathermap.org/img/wn/' + hourlyIconValue + '@4x.png'
+                            hourlyIcon = 'https://openweathermap.org/img/wn/' + hourlyIconValue + '@4x.png'
                             hourlyPop = result.hourly[i].pop * 100;
     
                             hourly[i] = {
@@ -318,7 +318,7 @@ router.get("/lat-lon/:lat/:lon", (req, res) => {
                                  maxTempF = Math.round ((9/5)*(maxTemp - 273.15) + 32);
                                  maxTempC = Math.round (maxTemp - 273.15);
                                  dayIconValue = result.daily[i].weather[0].icon;
-                                 dayIcon = 'http://openweathermap.org/img/wn/' + dayIconValue + '@4x.png'
+                                 dayIcon = 'https://openweathermap.org/img/wn/' + dayIconValue + '@4x.png'
                                  dayPop = result.daily[i].pop * 100;
 
                                  daily[i] = {
