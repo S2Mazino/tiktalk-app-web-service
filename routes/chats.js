@@ -379,4 +379,57 @@ router.delete("/:chatId/:email", (request, response, next) => {
     }
 )
 
+
+/*
+* get all chatrooms associated with the token's member id
+*/
+router.get("/", (request, response, next) => {
+    //validate member id exists
+    let query = 'SELECT * FROM Members WHERE memberid=$1'
+    let values = [request.decoded.memberid]
+    //let values = [request.params.memberId]
+
+    pool.query(query, values)
+        .then(result => {
+            if (result.rowCount == 0) {
+                response.status(204).send({
+                    message: "Member ID not found"
+                })
+            } else {
+                next()
+            }
+        }).catch(error => {
+            response.status(400).send({
+                message: "SQL Error in member validation",
+                error: error
+            })
+        })
+    }, (request, response) => {
+        //Retrieve the member's chatrooms
+        let query = 'SELECT Chats.Name, Chats.Chatid FROM Chats INNER JOIN Chatmembers ON Chats.Chatid = Chatmembers.Chatid WHERE memberid = $1'
+        let values = [request.decoded.memberid]
+        // let values = [request.params.memberId]
+        pool.query(query, values)
+            .then(result => {
+                if (result.rowCount == 0) {
+                    response.status(204).send({
+                        message: "No Chatrooms"
+                    })
+                } else {
+                    //console.log(result.rows)
+                    response.send({
+                        memberId: request.params.memberId,
+                        rowCount: result.rowCount,
+                        rows: result.rows
+                    })
+                }
+            }).catch(err => {
+                //console.log(err)
+                response.status(400).send({
+                    message: "SQL Error in chatroom retrieve",
+                    error: err
+                })
+            })
+});
+
 module.exports = router
