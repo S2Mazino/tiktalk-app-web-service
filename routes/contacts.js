@@ -218,7 +218,7 @@ router.get("/search", (request, response, next) => {
     pool.query(query, values)
         .then(result => {
             if (result.rowCount == 0) {
-                response.status(204).send({
+                response.status(200).send({
                     message: "Member ID not found"
                 })
             } else {
@@ -238,12 +238,12 @@ router.get("/search", (request, response, next) => {
         pool.query(query, values)
             .then(result => {
                 if (result.rowCount == 0) {
-                    response.status(204).send({
+                    response.status(200).send({
                         message: "No Contacts"
                     })
                 } else {
                     //console.log(result.rows)
-                    response.send({
+                    response.status(200).send({
                         memberId: request.params.memberId,
                         rowCount: result.rowCount,
                         rows: result.rows
@@ -270,7 +270,7 @@ router.get("/request", (request, response, next) => {
     pool.query(query, values)
         .then(result => {
             if (result.rowCount == 0) {
-                response.status(204).send({
+                response.status(200).send({
                     message: "Member ID not found"
                 })
             } else {
@@ -290,12 +290,12 @@ router.get("/request", (request, response, next) => {
         pool.query(query, values)
             .then(result => {
                 if (result.rowCount == 0) {
-                    response.status(204).send({
+                    response.status(200).send({
                         message: "No Contacts"
                     })
                 } else {
                     //console.log(result.rows)
-                    response.send({
+                    response.status(200).send({
                         memberId: request.params.memberId,
                         rowCount: result.rowCount,
                         rows: result.rows
