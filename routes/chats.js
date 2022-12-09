@@ -540,7 +540,7 @@ router.post("/add", (request, response, next) => {
 }, (request, response, next) => {
     //validate memberid exist
     let select = `SELECT * FROM members WHERE memberid = $1`
-    let values = [reequest.decoded.memberid]
+    let values = [request.decoded.memberid]
 
     pool.query(select, values)
         .then(result => {
@@ -585,8 +585,7 @@ router.post("/add", (request, response, next) => {
     pool.query(insert, values)
         .then(result => {
             response.send({
-                success: true,
-                chatID:result.rows[0].chatid
+                success: true
             })
         }).catch (err => {
             response.status(400).send({
