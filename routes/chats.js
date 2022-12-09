@@ -528,7 +528,7 @@ router.get("/", (request, response, next) => {
             })
 })
 
-//user gives both memberid  and chatname, but also needs to 
+//user gives both memberid  and chatname
 router.post("/add", (request, response, next) => {
     if (!isStringProvided(request.body.name)) {
         response.status(400).send({
@@ -595,5 +595,7 @@ router.post("/add", (request, response, next) => {
             })
         })
 })
+
+
 
 module.exports = router
