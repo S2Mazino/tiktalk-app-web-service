@@ -596,7 +596,7 @@ router.post("/add", (request, response, next) => {
 })
 
 router.post("/addUser", (request, response, next) => {
-    if (!isStringProvided(request.body.email) || isNaN(request.body.chatid)) {
+    if (!isStringProvided(request.body.email)) {
         response.status(400).send({
             message: "Missing required information"
         })
