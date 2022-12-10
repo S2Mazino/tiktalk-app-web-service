@@ -595,6 +595,53 @@ router.post("/add", (request, response, next) => {
         })
 })
 
+router.post("/addUser", (request, response, next) => {
+    if (!isStringProvided(request.body.email) || isNaN(request.body.chatid)) {
+        response.status(400).send({
+            message: "Missing required information"
+        })
+    } else {
+        next()
+    }
+}, (request, response, next) => {
+    let select = `SELECT memberid FROM members WHERE email = $1`
+    let values = [request.body.email]
+    pool.query(select, values)
+        .then(result => {
+            if(result.rowCount == 0) {
+                response.status(400).send({
+                    message: "contact does not exist"
+                })
+            }else {
+                request.params.memberid = result.rows[0].memberid
+                next()
+            }
+        })
+}, (request, response) => {
+
+    let insert = `INSERT INTO ChatMembers(chatid, memberid)
+                  VALUES ($1, $2)`
+    let values = [request.body.chatid, request.params.memberid]
+    pool.query(insert, values)
+        .then(result => {
+            if(result.rowCount == 0) {
+                response.status(400).send({
+                    message: "FAILED SQL INSERT"
+                })
+            }else {
+                response.send({
+                    success: true
+                })
+            }
+           
+        }).catch(err => {
+            response.status(400).send({
+                message: "SQL Error",
+                error: err
+            })
+
+        })
+})
 
 
 module.exports = router
