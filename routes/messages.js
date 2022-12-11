@@ -50,6 +50,7 @@ let isStringProvided = validation.isStringProvided
  *          error: error
  *      }  
  * 
+ * @apiUse JSONError
  */ 
 router.post("/", (request, response, next) => {
     //validate on empty parameters
@@ -182,13 +183,7 @@ router.post("/", (request, response, next) => {
  * @apiError (400: Invalid Parameter) {String} message "Malformed parameter. chatId must be a number" 
  * @apiError (400: Missing Parameters) {String} message "Missing required information"
  * 
- * @apiError (400: SQL Error) {String} message "SQL Error"
  * @apiError (400: SQL Error) {String} message the reported SQL error details
- * @apiErrorExample {json} 
- *      {    
- *          message: "SQL Error",
- *          error: error
- *      }  
  * 
  */ 
 router.get("/:chatId?/:messageId?", (request, response, next) => {
