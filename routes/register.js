@@ -158,7 +158,35 @@ router.post('/', (request, response, next) => {
             })
 })
 
-
+/**
+ * @api {get} /auth/verify Request to verify a user in the system
+ * @apiName PostAuth
+ * @apiGroup Auth
+ * 
+ * @apiDescription Request to verify the given id is owned by the actual owner 
+ * and allow them to signin once verified
+ * 
+ * @apiParam {String} id the member to look up. 
+ * 
+ * @apiSuccess {boolean} success true when the verification is updated
+ * @apiSuccess {String} message "Email verification success!"
+ * 
+ *  * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 201 OK
+ *     {
+ *       "success": true,
+ *       "message": "Email verification success!"
+ *     }
+ * 
+ * @apiError (400: Missing Parameter) {String} message "Missing required information"
+ * 
+ * @apiError (404: User Not Found) {String} message "User not found"
+ * 
+ * @apiError (400: User Already Verified) {String} message "User already verified"
+ * 
+ * @apiError (400: SQL Error) {String} message the reported SQL error details
+ * 
+ */ 
 router.get('/verify', (request, response) => {
     if(isStringProvided(request.query.id)){
         //check if the member already verified or not

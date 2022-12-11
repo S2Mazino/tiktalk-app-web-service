@@ -11,7 +11,33 @@ const validation = require('../utilities').validation
 let isStringProvided = validation.isStringProvided
 
 
-//outgoing request send
+/**
+ * @api {post} /contacts Request to add a user
+ * @apiName PostContacts
+ * @apiGroup Contacts
+ * 
+ * @apiDescription Adds the specified user from the user associated with the required JWT. 
+ * 
+ * @apiHeader {String} authorization Valid JSON Web Token JWT
+ * 
+ * @apiParam {String} email the user to add 
+ * 
+ * @apiSuccess (Success 201) {boolean} success true when the email is inserted
+ * 
+ * @apiError (400: Unknown user) {String} message "Member ID not found"
+ * 
+ * @apiError (400: Unknown user) {String} message "Friend email not found"
+ * 
+ * @apiError (400: Missing Parameters) {String} message "Missing required information"
+ * 
+ * @apiError (400: Invalid Parameters) {String} message "Missing email requirement"
+ * 
+ * @apiError (400: Request exists) {String} message "Contact incoming/outgoing exist"
+ * 
+ * @apiError (400: SQL Error) {String} message the reported SQL error details
+ * 
+ * @apiUse JSONError
+ */ 
 router.post("/", (request, response, next) => {
     const email = request.body.email
     if(isStringProvided(email)) {
@@ -54,7 +80,7 @@ router.post("/", (request, response, next) => {
         .then(result => {
             if (result.rowCount == 0) {
                 response.status(400).send({
-                    message: "friend email not found"
+                    message: "Friend email not found"
                 })
             } else {
                 request.params.friendId = result.rows[0].memberid
@@ -76,7 +102,7 @@ router.post("/", (request, response, next) => {
                     next()
                 } else {
                     response.status(400).send({
-                        message: "Contact incoming/outgoing exist already",
+                        message: "Contact incoming/outgoing exist"
                     })
                 }
 
@@ -96,11 +122,11 @@ router.post("/", (request, response, next) => {
             .then(result => {
                 if(result.rowCount == 0) {
                     response.status(400).send({
-                        message: "Contact send request already exist"
+                        message: "Contact incoming/outgoing exist"
                     })
                 } else {
                     //console.log(result.rows)
-                    response.status(200).send({
+                    response.status(201).send({
                         success: true
                     })
                 }
@@ -113,19 +139,42 @@ router.post("/", (request, response, next) => {
             })
 })
 
-/*
-* get all contacts friend associated with the token's member id
-*/
+
+/**
+ * @api {get} /contacts Request to get contacts
+ * @apiName GetContacts
+ * @apiGroup Contacts
+ * 
+ * @apiDescription Request to get all contacts associated with the JSON Web Token JWT that have been accepted
+ *  
+ * @apiHeader {String} authorization Valid JSON Web Token JWT
+ * 
+ * @apiSuccess {Number} memberId the id of the user that made the request
+ * @apiSuccess {Number} rowCount the number of contacts returned
+ * @apiSuccess {Object[]} contacts List of contacts in the contacts table
+ * @apiSuccess {String} contacts.FirstName The contact's first name
+ * @apiSuccess {String} contacts.LastName The contact's last name
+ * @apiSuccess {String} contacts.Nickname The contact's nickname
+ * @apiSuccess {String} contacts.email The contact's email
+ * @apiSuccess {Number} contacts.memberid_b The contact's id
+ * 
+ * @apiSuccess (Success 204) {String} message "No Contacts"
+ * 
+ * @apiError (400: Unknown user) {String} message "Member ID not found"
+ * 
+ * @apiError (400: SQL Error) {String} message the reported SQL error details
+ * 
+ * @apiUse JSONError
+ */ 
 router.get("/", (request, response, next) => {
     //validate member id exists
     let query = 'SELECT * FROM Members WHERE memberid=$1'
     let values = [request.decoded.memberid]
-    //let values = [request.params.memberId]
-
+    
     pool.query(query, values)
         .then(result => {
             if (result.rowCount == 0) {
-                response.status(204).send({
+                response.status(400).send({
                     message: "Member ID not found"
                 })
             } else {
@@ -141,7 +190,7 @@ router.get("/", (request, response, next) => {
         //Retrieve the member's contact
         let query = 'SELECT Members.FirstName, Members.LastName, Members.Nickname, Members.email, MemberID_B FROM Contacts INNER JOIN Members ON Contacts.MemberID_B = Members.MemberID where Contacts.MemberID_A = $1 AND Contacts.verified = 1'
         let values = [request.decoded.memberid]
-        // let values = [request.params.memberId]
+
         pool.query(query, values)
             .then(result => {
                 if (result.rowCount == 0) {
@@ -151,7 +200,7 @@ router.get("/", (request, response, next) => {
                 } else {
                     //console.log(result.rows)
                     response.send({
-                        memberId: request.params.memberId,
+                        memberId: request.decoded.memberId,
                         rowCount: result.rowCount,
                         rows: result.rows
                     })
@@ -165,9 +214,26 @@ router.get("/", (request, response, next) => {
             })
 });
 
-/*
-* delete the friendID from the associated token's memberid
-*/
+/**
+ * @api {delete} /contacts/:friendID? Request delete a user from contact
+ * @apiName DeleteContacts
+ * @apiGroup Contacts
+ * 
+ * @apiDescription Does not delete the user associated with the required JWT but 
+ * instead deletes the user based on the ID parameter.  
+ * 
+ * @apiParam {Number} friendID the ID to delete the user from
+ * 
+ * @apiSuccess (Success 200) {boolean} success true when the name is deleted
+ * 
+ * @apiError (404: Contact Not Found) {String} message "Contact does not exist"
+ * @apiError (400: Invalid Parameter) {String} message "Malformed parameter. friendID must be a number" 
+ * @apiError (400: Missing Parameters) {String} message "Missing required information"
+ * 
+ * @apiError (400: SQL Error) {String} message the reported SQL error details
+ * 
+ * @apiUse JSONError
+ */ 
 router.delete("/:friendID?", (request, response, next) => {
     //validate on empty parameters
     if (!request.params.friendID) {
@@ -206,19 +272,41 @@ router.delete("/:friendID?", (request, response, next) => {
         })
 });
 
-/*
-* get all outgoing contacts associated with the token's member id
-*/
+/**
+ * @api {get} /contacts/search Request to get outgoing contact
+ * @apiName GetContacts
+ * @apiGroup Contacts
+ * 
+ * @apiDescription Request to get all contacts associated with the JSON Web Token JWT that are outgoing
+ *  
+ * @apiHeader {String} authorization Valid JSON Web Token JWT
+ * 
+ * @apiSuccess {Number} memberId the id of the user that made the request
+ * @apiSuccess {Number} rowCount the number of contacts returned
+ * @apiSuccess {Object[]} contacts List of contacts in the contacts table
+ * @apiSuccess {String} contacts.FirstName The contact's first name
+ * @apiSuccess {String} contacts.LastName The contact's last name
+ * @apiSuccess {String} contacts.Nickname The contact's nickname
+ * @apiSuccess {String} contacts.email The contact's email
+ * @apiSuccess {Number} contacts.memberid_b The contact's id
+ * 
+ * @apiSuccess (Success 200) {String} message "No Contacts"
+ * 
+ * @apiError (400: Unknown user) {String} message "Member ID not found"
+ * 
+ * @apiError (400: SQL Error) {String} message the reported SQL error details
+ * 
+ * @apiUse JSONError
+ */ 
 router.get("/search", (request, response, next) => {
     //validate member id exists
     let query = 'SELECT * FROM Members WHERE memberid=$1'
     let values = [request.decoded.memberid]
-    //let values = [request.params.memberId]
 
     pool.query(query, values)
         .then(result => {
             if (result.rowCount == 0) {
-                response.status(200).send({
+                response.status(400).send({
                     message: "Member ID not found"
                 })
             } else {
@@ -234,7 +322,7 @@ router.get("/search", (request, response, next) => {
         //Retrieve the member's contact
         let query = 'SELECT Members.FirstName, Members.LastName, Members.Nickname, Members.email, MemberID_B FROM Contacts INNER JOIN Members ON Contacts.MemberID_B = Members.MemberID where Contacts.MemberID_A = $1 AND Contacts.verified = 0'
         let values = [request.decoded.memberid]
-        // let values = [request.params.memberId]
+        
         pool.query(query, values)
             .then(result => {
                 if (result.rowCount == 0) {
@@ -244,7 +332,7 @@ router.get("/search", (request, response, next) => {
                 } else {
                     //console.log(result.rows)
                     response.status(200).send({
-                        memberId: request.params.memberId,
+                        memberId: request.decoded.memberId,
                         rowCount: result.rowCount,
                         rows: result.rows
                     })
@@ -258,19 +346,41 @@ router.get("/search", (request, response, next) => {
             })
 });
 
-/*
-* get all incoming contacts associated with the token's member id
-*/
+/**
+ * @api {get} /contacts/request Request to get incoming contact
+ * @apiName GetContacts
+ * @apiGroup Contacts
+ * 
+ * @apiDescription Request to get all contacts associated with the JSON Web Token JWT that are incoming
+ *  
+ * @apiHeader {String} authorization Valid JSON Web Token JWT
+ * 
+ * @apiSuccess {Number} memberId the id of the user that made the request
+ * @apiSuccess {Number} rowCount the number of contacts returned
+ * @apiSuccess {Object[]} contacts List of contacts in the contacts table
+ * @apiSuccess {String} contacts.FirstName The contact's first name
+ * @apiSuccess {String} contacts.LastName The contact's last name
+ * @apiSuccess {String} contacts.Nickname The contact's nickname
+ * @apiSuccess {String} contacts.email The contact's email
+ * @apiSuccess {Number} contacts.memberid_a The contact's id
+ * 
+ * @apiSuccess (Success 200) {String} message "No Contacts"
+ * 
+ * @apiError (400: Unknown user) {String} message "Member ID not found"
+ * 
+ * @apiError (400: SQL Error) {String} message the reported SQL error details
+ * 
+ * @apiUse JSONError
+ */ 
 router.get("/request", (request, response, next) => {
     //validate member id exists
     let query = 'SELECT * FROM Members WHERE memberid=$1'
     let values = [request.decoded.memberid]
-    //let values = [request.params.memberId]
 
     pool.query(query, values)
         .then(result => {
             if (result.rowCount == 0) {
-                response.status(200).send({
+                response.status(400).send({
                     message: "Member ID not found"
                 })
             } else {
@@ -286,7 +396,7 @@ router.get("/request", (request, response, next) => {
         //Retrieve the member's contact
         let query = 'SELECT Members.FirstName, Members.LastName, Members.Nickname, Members.email, MemberID_A FROM Contacts INNER JOIN Members ON Contacts.MemberID_A = Members.MemberID where Contacts.MemberID_B = $1 AND Contacts.verified = 0;'
         let values = [request.decoded.memberid]
-        // let values = [request.params.memberId]
+
         pool.query(query, values)
             .then(result => {
                 if (result.rowCount == 0) {
@@ -296,7 +406,7 @@ router.get("/request", (request, response, next) => {
                 } else {
                     //console.log(result.rows)
                     response.status(200).send({
-                        memberId: request.params.memberId,
+                        memberId: request.decoded.memberId,
                         rowCount: result.rowCount,
                         rows: result.rows
                     })
@@ -310,7 +420,33 @@ router.get("/request", (request, response, next) => {
             })
 });
 
-//accept incoming request
+/**
+ * @api {post} /contacts/accept Request to accept an incoming request from another user
+ * @apiName PostContacts
+ * @apiGroup Contacts
+ * 
+ * @apiDescription Adds the specified user from the user associated with the required JWT. 
+ * 
+ * @apiHeader {String} authorization Valid JSON Web Token JWT
+ * 
+ * @apiParam {String} memberid the user to add 
+ * 
+ * @apiSuccess (Success 200) {boolean} success true when the email is updated/inserted
+ * 
+ * @apiError (400: Unknown user) {String} message "Member ID not found"
+ * 
+ * @apiError (400: Unknown user) {String} message "Friend ID not found"
+ * 
+ * @apiError (400: Request does not exists) {String} message "Contact request does not exist"
+ * 
+ * @apiError (400: Duplicate request) {String} message "Contact's send request was already verified"
+ * 
+ * @apiError (400: Duplicate request) {String} message "Contact send request already exist"
+ * 
+ * @apiError (400: SQL Error) {String} message the reported SQL error details
+ * 
+ * @apiUse JSONError
+ */ 
 router.post("/accept", (request, response, next) => {
     //validate member id exists
     let query = 'SELECT * FROM Members WHERE memberid=$1'
@@ -340,7 +476,7 @@ router.post("/accept", (request, response, next) => {
         .then(result => {
             if (result.rowCount == 0) {
                 response.status(400).send({
-                    message: "friend ID not found"
+                    message: "Friend ID not found"
                 })
             } else {
                 request.params.friendId = result.rows[0].memberid
@@ -362,12 +498,11 @@ router.post("/accept", (request, response, next) => {
                     next()
                 } else {
                     response.status(400).send({
-                        message: "Contact incoming/outgoing exist already",
+                        message: "Contact request does not exist",
                     })
                 }
 
             }).catch(err => {
-                //console.log(err)
                 response.status(400).send({
                     message: "SQL Error in contact exist validation",
                     error: err
@@ -376,7 +511,6 @@ router.post("/accept", (request, response, next) => {
 
     },(request, response, next) => {
         //UPDATE the existing contact that sent the request
-        //let query = 'INSERT INTO Contacts (primarykey, memberid_a, memberid_b, verified) VALUES (default, $2, $1, 1)'
         let query = 'UPDATE Contacts SET verified = 1 WHERE memberid_a = $2 AND memberid_b = $1'
         let values = [request.decoded.memberid, request.params.friendId]
         pool.query(query, values)
@@ -386,14 +520,9 @@ router.post("/accept", (request, response, next) => {
                         message: "Contact's send request was already verified"
                     })
                 } else {
-                    //console.log(result.rows)
-                    // response.status(200).send({
-                    //     success: true
-                    // })
                     next()
                 }
             }).catch(err => {
-                //console.log(err)
                 response.status(400).send({
                     message: "SQL Error in contact update",
                     error: err
@@ -410,13 +539,11 @@ router.post("/accept", (request, response, next) => {
                         message: "Contact send request already exist"
                     })
                 } else {
-                    //console.log(result.rows)
                     response.status(200).send({
                         success: true
                     })
                 }
             }).catch(err => {
-                //console.log(err)
                 response.status(400).send({
                     message: "SQL Error in contact accept insert",
                     error: err
