@@ -21,8 +21,6 @@ let isStringProvided = validation.isStringProvided
  * @apiHeader {String} authorization "username:password" uses Basic Auth
  * 
  * @apiSuccess {boolean} success true when the pushy token is deleted
- * @apiSuccess (Success 200) success true when the name is inserted
- * @apiSuccess (Success 200) {json} { success:true }
  * 
  * @apiError (400: Missing Parameters) {String} message "Missing required information"
  * @apiError (400: Invalid Parameter) {String} message "Malformed parameter. chatId must be a number"
@@ -52,7 +50,6 @@ let isStringProvided = validation.isStringProvided
  *          error: error
  *      }  
  * 
- * @apiUse JSONError
  */ 
 router.post("/", (request, response, next) => {
     //validate on empty parameters
@@ -193,7 +190,6 @@ router.post("/", (request, response, next) => {
  *          error: error
  *      }  
  * 
- * @apiUse JSONError
  */ 
 router.get("/:chatId?/:messageId?", (request, response, next) => {
         //validate chatId is not empty or non-number

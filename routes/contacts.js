@@ -36,7 +36,6 @@ let isStringProvided = validation.isStringProvided
  * 
  * @apiError (400: SQL Error) {String} message the reported SQL error details
  * 
- * @apiUse JSONError
  */ 
 router.post("/", (request, response, next) => {
     const email = request.body.email
@@ -164,7 +163,6 @@ router.post("/", (request, response, next) => {
  * 
  * @apiError (400: SQL Error) {String} message the reported SQL error details
  * 
- * @apiUse JSONError
  */ 
 router.get("/", (request, response, next) => {
     //validate member id exists
@@ -232,7 +230,6 @@ router.get("/", (request, response, next) => {
  * 
  * @apiError (400: SQL Error) {String} message the reported SQL error details
  * 
- * @apiUse JSONError
  */ 
 router.delete("/:friendID?", (request, response, next) => {
     //validate on empty parameters
@@ -296,7 +293,6 @@ router.delete("/:friendID?", (request, response, next) => {
  * 
  * @apiError (400: SQL Error) {String} message the reported SQL error details
  * 
- * @apiUse JSONError
  */ 
 router.get("/search", (request, response, next) => {
     //validate member id exists
@@ -370,7 +366,6 @@ router.get("/search", (request, response, next) => {
  * 
  * @apiError (400: SQL Error) {String} message the reported SQL error details
  * 
- * @apiUse JSONError
  */ 
 router.get("/request", (request, response, next) => {
     //validate member id exists
@@ -445,7 +440,6 @@ router.get("/request", (request, response, next) => {
  * 
  * @apiError (400: SQL Error) {String} message the reported SQL error details
  * 
- * @apiUse JSONError
  */ 
 router.post("/accept", (request, response, next) => {
     //validate member id exists

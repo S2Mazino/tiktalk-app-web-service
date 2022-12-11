@@ -29,7 +29,6 @@ let isStringProvided = validation.isStringProvided
  * 
  * @apiError (400: Unknown Chat ID) {String} message "invalid chat id"
  * 
- * @apiUse JSONError
  */ 
 router.post("/", (request, response, next) => {
     if (!isStringProvided(request.body.name)) {
@@ -81,7 +80,6 @@ router.post("/", (request, response, next) => {
  * 
  * @apiError (400: SQL Error) {String} message the reported SQL error details
  * 
- * @apiUse JSONError
  */ 
 router.put("/:chatId/", (request, response, next) => {
     //validate on empty parameters
@@ -200,7 +198,6 @@ console.log(request.decoded)
  * 
  * @apiError (400: SQL Error) {String} message the reported SQL error details
  * 
- * @apiUse JSONError
  */ 
 router.get("/:chatId", (request, response, next) => {
     //validate on missing or invalid (type) parameters
@@ -277,7 +274,6 @@ router.get("/:chatId", (request, response, next) => {
  * 
  * @apiError (400: SQL Error) {String} message the reported SQL error details
  * 
- * @apiUse JSONError
  */ 
 router.delete("/:chatId/:email", (request, response, next) => {
     //validate on empty parameters
@@ -394,7 +390,6 @@ router.delete("/:chatId/:email", (request, response, next) => {
  * 
  * @apiError (400: SQL Error) {String} message the reported SQL error details
  * 
- * @apiUse JSONError
  */ 
 router.delete("/:chatId", (request, response, next) => {
     //validate on empty parameters
@@ -512,7 +507,6 @@ router.delete("/:chatId", (request, response, next) => {
  * 
  * @apiError (400: SQL Error) {String} message the reported SQL error details
  * 
- * @apiUse JSONError
  */ 
 router.get("/", (request, response, next) => {
     //validate member id exists
@@ -578,7 +572,6 @@ router.get("/", (request, response, next) => {
  * 
  * @apiError (400: SQL Error) {String} message the reported SQL error details
  * 
- * @apiUse JSONError
  */ 
 router.post("/add", (request, response, next) => {
     if (!isStringProvided(request.body.name)) {
@@ -661,7 +654,6 @@ router.post("/add", (request, response, next) => {
  * 
  * @apiError (400: SQL Error) {String} message the reported SQL error details
  * 
- * @apiUse JSONError
  */ 
 router.post("/addUser", (request, response, next) => {
     if (!isStringProvided(request.body.email)) {

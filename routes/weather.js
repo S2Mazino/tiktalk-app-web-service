@@ -53,7 +53,7 @@ const router = express.Router();
  * }
  *
  * @apiError (400: Invalid Zipcode) {String} message "Invalid zipcode: " + zipcode
- * @apiError (400: Invalid Coordinate) {String} "Invalid coordinates: lat " + lat + ", lon " + lon
+ * @apiError (400: Invalid Coordinate) {String} message "Invalid coordinates: lat " + lat + ", lon " + lon
  */
 
 // get zipcode from the user
@@ -105,7 +105,7 @@ router.get("/zipcode/:zipcode",(req, res) => {
                 request(weatherURL, function (error, response, body) {
                     if (error) {
                         res.status(400).send({
-                                message: "Invalid coordinates: lat " + lat + ", lon " + lon,
+                                message: "Invalid coordinates: lat " + lat + ", lon " + lon
                         });
                         return;
                     } else {
