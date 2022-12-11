@@ -19,7 +19,7 @@ const router = express.Router();
  * @apiName GetWeatherZipcode
  * @apiGroup Get Weather
  *
- * @apiparam {Number} zipcode Zipcode of desired location.
+ * @apiparam {String} zipcode Zipcode of desired location.
  *
  * @apiSuccess (Success 200) {json} Success json object of weather information
  * @apiSuccessExample {json} Success-Response:
@@ -221,8 +221,8 @@ router.get("/zipcode/:zipcode",(req, res) => {
  * @apiName GetWeatherCoordinate(Lat/Lon)
  * @apiGroup Get Weather
  *
- * @apiParam {Number} lat Latitude of desired location.
- * @apiParam {Number} lon Longitude of desired location.
+ * @apiParam {String} lat Latitude of desired location.
+ * @apiParam {String} lon Longitude of desired location.
  *
  * @apiSuccess (Success 200) {json} Success json object of weather information
  *

@@ -12,31 +12,44 @@ const validation = require('../utilities').validation
 let isStringProvided = validation.isStringProvided
 
 /**
- * @apiDefine JSONError
- * @apiError (400: JSON Error) {String} message "malformed JSON in parameters"
- */ 
-
-/**
  * @api {post} /messages Request to add a message to a specific chat
  * @apiName PostMessages
  * @apiGroup Messages
  * 
  * @apiDescription Adds the message from the user associated with the required JWT. 
  * 
- * @apiHeader {String} authorization Valid JSON Web Token JWT
+ * @apiHeader {String} authorization "username:password" uses Basic Auth
  * 
- * @apiParam {Number} chatId the id of th chat to insert this message into
- * @apiParam {String} message a message to store 
- * 
- * @apiSuccess (Success 201) {boolean} success true when the name is inserted
- * 
- * @apiError (400: Unknown user) {String} message "unknown email address"
+ * @apiSuccess (Success 200) success true when the name is inserted
+ * @apiSuccess (Success 200) {json} { success:true }
  * 
  * @apiError (400: Missing Parameters) {String} message "Missing required information"
- * 
+ * @apiError (400: Invalid Parameter) {String} message "Malformed parameter. chatId must be a number"
+ * @apiError (404: Chat ID not found) {String} message "Chat ID not found"
+ * @apiError (400: SQL Error) {String} message "SQL Error on chatid check"
  * @apiError (400: SQL Error) {String} message the reported SQL error details
+ * @apiErrorExample {json} 
+ *      {    
+ *          message: "SQL Error on chatid check",
+ *          error: error
+ *      }  
+ * @apiError (400: Unknown error) {String} message "unknown error"
  * 
- * @apiError (400: Unknown Chat ID) {String} message "invalid chat id"
+ * @apiError (400: SQL Error) {String} message "SQL Error on insert"
+ * @apiError (400: SQL Error) {String} message the reported SQL error details
+ * @apiErrorExample {json} 
+ *      {    
+ *          message: "SQL Error on insert",
+ *          error: error
+ *      }  
+ * 
+ * @apiError (400: SQL Error) {String} message "SQL Error on select from push token"
+ * @apiError (400: SQL Error) {String} message the reported SQL error details
+ * @apiErrorExample {json} 
+ *      {    
+ *          message: "SQL Error on select from push token",
+ *          error: error
+ *      }  
  * 
  * @apiUse JSONError
  */ 
@@ -171,7 +184,13 @@ router.post("/", (request, response, next) => {
  * @apiError (400: Invalid Parameter) {String} message "Malformed parameter. chatId must be a number" 
  * @apiError (400: Missing Parameters) {String} message "Missing required information"
  * 
+ * @apiError (400: SQL Error) {String} message "SQL Error"
  * @apiError (400: SQL Error) {String} message the reported SQL error details
+ * @apiErrorExample {json} 
+ *      {    
+ *          message: "SQL Error",
+ *          error: error
+ *      }  
  * 
  * @apiUse JSONError
  */ 
