@@ -20,6 +20,7 @@ let isStringProvided = validation.isStringProvided
  * 
  * @apiHeader {String} authorization "username:password" uses Basic Auth
  * 
+ * @apiSuccess {boolean} success true when the pushy token is deleted
  * @apiSuccess (Success 200) success true when the name is inserted
  * @apiSuccess (Success 200) {json} { success:true }
  * 
