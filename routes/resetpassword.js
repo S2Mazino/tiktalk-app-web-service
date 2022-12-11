@@ -12,11 +12,24 @@ let isStringProvided = validation.isStringProvided
 const router = express.Router()
 
 /**
- *  * @apiParamExample {json} Request-Body-Example:
+ * @api {post} /resetpassword/verify Verifies that the code the user inputs is the one assigned to the user inside the database
+ * @apiName VerifyResetCode
+ * @apiGroup resetpassword
+ * 
+ * @apiParam {String} email a users email *unique
+ * @apiParam {String} code the users verification code
+ * 
+ * @apiParamExample {json} Request-Body-Example:
  *  {
- *      "email":""email":"cfb3@fake.email",
+ *      "email":"cfb3@fake.email",
  *      "code":"code12345""
  *  }
+ * @apiSuccess (Success 200) {Integer} memberid the memberid associated with the users email
+ * 
+ * @apiError (404: Code doesn't match) {String} message "Code Doesnt Match"
+ * 
+ * @apiError (400: Other Error) {String} message "Error on verification check"
+ * 
  */
 
 router.post('/verify', (request, response) => {

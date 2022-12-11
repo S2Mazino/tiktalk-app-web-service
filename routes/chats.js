@@ -595,6 +595,7 @@ router.post("/add", (request, response, next) => {
         })
 })
 
+/* The above code is adding a user to a chat. */
 router.post("/addUser", (request, response, next) => {
     if (!isStringProvided(request.body.email)) {
         response.status(400).send({
