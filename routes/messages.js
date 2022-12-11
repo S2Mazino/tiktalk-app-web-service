@@ -50,7 +50,6 @@ let isStringProvided = validation.isStringProvided
  *          error: error
  *      }  
  * 
- * @apiUse JSONError
  */ 
 router.post("/", (request, response, next) => {
     //validate on empty parameters
