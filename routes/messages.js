@@ -27,7 +27,7 @@ let isStringProvided = validation.isStringProvided
  * @apiError (404: Chat ID not found) {String} message "Chat ID not found"
  * @apiError (400: SQL Error) {String} message "SQL Error on chatid check"
  * @apiError (400: SQL Error) {String} message the reported SQL error details
- * @apiErrorExample {json} 
+ * @apiErrorExample {json} SQL Error on chatid check:
  *      {    
  *          message: "SQL Error on chatid check",
  *          error: error
@@ -36,7 +36,7 @@ let isStringProvided = validation.isStringProvided
  * 
  * @apiError (400: SQL Error) {String} message "SQL Error on insert"
  * @apiError (400: SQL Error) {String} message the reported SQL error details
- * @apiErrorExample {json} 
+ * @apiErrorExample {json} SQL Error on insert:
  *      {    
  *          message: "SQL Error on insert",
  *          error: error
@@ -44,7 +44,7 @@ let isStringProvided = validation.isStringProvided
  * 
  * @apiError (400: SQL Error) {String} message "SQL Error on select from push token"
  * @apiError (400: SQL Error) {String} message the reported SQL error details
- * @apiErrorExample {json} 
+ * @apiErrorExample {json} SQL Error on select from push token:
  *      {    
  *          message: "SQL Error on select from push token",
  *          error: error
