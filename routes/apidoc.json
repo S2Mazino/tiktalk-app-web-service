@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "description": "Tiktalk Chat Application Web Service API Documentation",
     "title": "Tiktalk API Doc",
-    "url" : "https://tiktalk-app-web-service.herokuapp.com",
+    "url" : "https://tcss450-2022au-group3.herokuapp.com/",
     "order": [
       "Signin",
       "Register",

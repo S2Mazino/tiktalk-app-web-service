@@ -37,6 +37,8 @@ app.use("/weather", require("./routes/weather.js"));
 
 app.use('/contacts', middleware.checkToken, require('./routes/contacts.js'))
 
+app.use('/phish', middleware.checkToken, require('./routes/phish.js'))
+
 
 /*
  * Return HTML for the / end point. 
