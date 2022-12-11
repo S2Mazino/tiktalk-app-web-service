@@ -7,8 +7,8 @@
     "order": [
       "Signin",
       "Register",
-      "Messages",
       "Weather",
+      "Messages",
       "Chats",
       "Contacts",
       "Pushyregister",

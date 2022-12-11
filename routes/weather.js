@@ -19,18 +19,41 @@ const router = express.Router();
  * @apiName GetWeatherZipcode
  * @apiGroup Get Weather
  *
- * @apiHeader {String} JWT the jwt of the user
- *
  * @apiparam {Number} zipcode Zipcode of desired location.
  *
  * @apiSuccess (Success 200) {json} Success json object of weather information
- *
  * @apiSuccessExample {json} Success-Response:
- *      
- *  --- Let see the result ---
+ * {     
+ *  "city": "Puyallup",
+ *  "current": {
+ *   "tempF": 44,
+ *      "tempC": 7,
+ *      "condition": "Light Rain",
+ *      "iconValue": "10n",
+ *      "icon": "https://openweathermap.org/img/wn/10n@4x.png"
+ *  },
+ *  "hourly": [
+ *      { "hours": "4PM", "tempF": 44, "tempC": 7, "iconValue": "04d", 
+ *          "icon": "https://openweathermap.org/img/wn/04d@4x.png", "pop": 75 },
+ *      {"hours": "5PM", "tempF": 44, "tempC": 7, "iconValue": "10n", 
+ *          "icon": "https://openweathermap.org/img/wn/10n@4x.png", "pop": 62 },
+ *      { ... },
+ *      {"hours": "3PM", "tempF": 44, "tempC": 7, "iconValue": "04d", 
+ *          "icon": "https://openweathermap.org/img/wn/04d@4x.png", "pop": 0 }
+ *  ],
+ *  "daily": [
+ *      {"day": "Sat", "tempF": 46, "tempC": 8, "minTempF": 41, "minTempC": 5, "maxTempF": 46, "maxTempC": 8, 
+ *          "iconValue": "10d","icon": "https://openweathermap.org/img/wn/10d@4x.png", "pop": 100 },
+ *      { "day": "Sun", "tempF": 45, "tempC": 7, "minTempF": 38, "minTempC": 4, "maxTempF": 45, "maxTempC": 7,
+ *          "iconValue": "04d", "icon": "https://openweathermap.org/img/wn/04d@4x.png", "pop": 16 },
+ *      { ... },
+ *      { "day": "Fri", "tempF": 42, "tempC": 5, "minTempF": 30, "minTempC": -1, "maxTempF": 42, "maxTempC": 5,
+ *          "iconValue": "01d", "icon": "https://openweathermap.org/img/wn/01d@4x.png", "pop": 0 }
+ *  ]
+ * }
  *
- * @apiError (400: Invalid Zipcode) {String} message c
- *
+ * @apiError (400: Invalid Zipcode) {String} message "Invalid zipcode: " + zipcode
+ * @apiError (400: Invalid Coordinate) {String} "Invalid coordinates: lat " + lat + ", lon " + lon
  */
 
 // get zipcode from the user
@@ -195,23 +218,47 @@ router.get("/zipcode/:zipcode",(req, res) => {
 
 /**
  * @api {get} /weather/lat-lon/:lat/:lon Request for current, hourly, and daily weather information in imperial units. (Lat/Lon)
- * @apiName GetWeatherLatLon
+ * @apiName GetWeatherCoordinate(Lat/Lon)
  * @apiGroup Get Weather
- *
- * @apiHeader {String} JWT jwt of the user
  *
  * @apiParam {Number} lat Latitude of desired location.
  * @apiParam {Number} lon Longitude of desired location.
  *
- *
  * @apiSuccess (Success 200) {json} Success json object of weather information
  *
  * @apiSuccessExample {json} Success-Response:
- * 
- *  --- Let see the result ---
+ * {     
+ *  "city": "Puyallup",
+ *  "current": {
+ *   "tempF": 44,
+ *      "tempC": 7,
+ *      "condition": "Light Rain",
+ *      "iconValue": "10n",
+ *      "icon": "https://openweathermap.org/img/wn/10n@4x.png"
+ *  },
+ *  "hourly": [
+ *      { "hours": "4PM", "tempF": 44, "tempC": 7, "iconValue": "04d", 
+ *          "icon": "https://openweathermap.org/img/wn/04d@4x.png", "pop": 75 },
+ *      {"hours": "5PM", "tempF": 44, "tempC": 7, "iconValue": "10n", 
+ *          "icon": "https://openweathermap.org/img/wn/10n@4x.png", "pop": 62 },
+ *      { ... },
+ *      {"hours": "3PM", "tempF": 44, "tempC": 7, "iconValue": "04d", 
+ *          "icon": "https://openweathermap.org/img/wn/04d@4x.png", "pop": 0 }
+ *  ],
+ *  "daily": [
+ *      {"day": "Sat", "tempF": 46, "tempC": 8, "minTempF": 41, "minTempC": 5, "maxTempF": 46, "maxTempC": 8, 
+ *          "iconValue": "10d","icon": "https://openweathermap.org/img/wn/10d@4x.png", "pop": 100 },
+ *      { "day": "Sun", "tempF": 45, "tempC": 7, "minTempF": 38, "minTempC": 4, "maxTempF": 45, "maxTempC": 7,
+ *          "iconValue": "04d", "icon": "https://openweathermap.org/img/wn/04d@4x.png", "pop": 16 },
+ *      { ... },
+ *      { "day": "Fri", "tempF": 42, "tempC": 5, "minTempF": 30, "minTempC": -1, "maxTempF": 42, "maxTempC": 5,
+ *          "iconValue": "01d", "icon": "https://openweathermap.org/img/wn/01d@4x.png", "pop": 0 }
+ *  ]
+ * }
  *
- * @apiError (400: Invalid Latitude and/or Longitude) {String} message "Invalid Latitude and/or Longitude"
- *
+ * @apiError (400: Invalid Latitude and/or Longitude) {String} message "Invalid latitude: " + lat + " and/or longitude: " + lon
+ * @apiError (400: Invalid Coordinate) {String} message "Invalid coordinates: lat " + lat + ", lon " + lon
+ * @apiError (400: Invalid latitude or longitude) {String} message "Invalid latitude or longitude"
  */
 
 // get latitude and longitude from the user
@@ -226,7 +273,7 @@ router.get("/lat-lon/:lat/:lon", (req, res) => {
         request(cityURL, function (error, response, body) {
             if (error) {
                 res.status(400).send({
-                    message: "Invalid latitude: " + lat + ", or longitude: " + lon,
+                    message: "Invalid latitude: " + lat + " and/or longitude: " + lon,
                 });
             } else {
                 let cityInfo = JSON.parse(body);
