@@ -8,7 +8,7 @@
     "url": "https://github.com/cfb3/tcss-450-web-service-starter"
   },
   "scripts": {
-    "test": "index.js"
+    "start": "node index.js"
   },
   "keywords": [
     "TCSS450",
