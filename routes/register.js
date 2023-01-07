@@ -96,7 +96,7 @@ router.post('/', (request, response, next) => {
                             })
                         } else {
                             response.status(400).send({
-                                message: "other error, see detail",
+                                message: "other error, see detail - insert members",
                                 detail: error.detail
                             })
                         }
@@ -134,7 +134,7 @@ router.post('/', (request, response, next) => {
                     email: request.body.email
                 })
                 
-                const url = `https://tcss450-2022au-group3.herokuapp.com/auth/verify?id=${values[0]}`
+                const url = `https://tiktalk-app-web-service.onrender.com/verify?id=${values[0]}`
                 //console.log(url)
                 message = `Please click this link to confirm your email: <a href=${url}>${url}</a>`
                 sendEmail(sender, request.body.email,"Welcome to our app", message)
@@ -152,7 +152,7 @@ router.post('/', (request, response, next) => {
                  **********************************************************************/
 
                 response.status(400).send({
-                    message: "other error, see detail",
+                    message: "other error, see detail - insert credentials",
                     detail: error.detail
                 })
             })
